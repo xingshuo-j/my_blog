@@ -5,26 +5,45 @@ import "../styles/base.css";
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" href="/favicon.ico" />
         <title>xing's blog</title>
         <style>
-            h1 {
-                color: #fffacd;
+            .title {
+                color: #ff6b6b;
                 text-align: center;
-                font-size: 2.5rem;
-                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-                margin: 0;
-                padding: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                animation: typing 2s steps(20, end);
+                font-size: 42px;
+                font-weight: 300;
+                font-family: "Georgia", serif;
+                font-style: italic;
+            }
+
+            @keyframes typing {
+                from {
+                    width: 0;
+                }
+                to {
+                    width: 100%;
+                }
+            }
+
+            /* 需要给 h1 添加 inline-block 或 block 并设置宽度 */
+            .title {
+                display: inline-block;
+                width: 0;
+                animation: typing 2s steps(30, end) forwards;
+            }
+
+            .content {
+                text-align: center;
             }
         </style>
     </head>
     <body>
         <div class="bg-wrapper">
             <div class="content">
-                <div class="glass-card">
-                    <h1>Have A Nice Day!</h1>
-                </div>
+                <h1 class="title">Have A Nice Day!</h1>
             </div>
         </div>
     </body>

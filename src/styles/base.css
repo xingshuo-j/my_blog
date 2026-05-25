@@ -29,8 +29,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    /* 可选：叠加半透明层增加可读性 */
 }
 
 .glass-card {
@@ -38,8 +36,8 @@
     width: 300px;
     color: white;
     background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(8px) saturate(180%);
-    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    /* backdrop-filter: blur(8px) saturate(180%);  已移除 - 文字保持清晰 */
+    /* -webkit-backdrop-filter: blur(8px) saturate(180%); 已移除 - 文字保持清晰 */
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
