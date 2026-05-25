@@ -1,24 +1,52 @@
-body {
-    margin: 0;
+/* 设置一个相对定位的容器，占满全屏 */
+.bg-wrapper {
+    position: relative;
+    width: 100%;
     min-height: 100vh;
-    /* 改为 min-height，更灵活 */
+    overflow: hidden;
+}
+
+/* 背景图片层（会被模糊） */
+.bg-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/background_windows.jpg') center/cover no-repeat;
+    filter: blur(10px) saturate(180%);
+    transform: scale(1.05);
+    /* 避免模糊后边缘出现白边 */
+    z-index: 0;
+}
+
+/* 内容层（清晰显示） */
+.content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('/background_windows.jpg') center/cover no-repeat;
-    font-family: system-ui, -apple-system, sans-serif;
+    background: rgba(255, 255, 255, 0.1);
+    /* 可选：叠加半透明层增加可读性 */
 }
 
 .glass-card {
     padding: 40px;
     width: 300px;
     color: white;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px) saturate(180%);
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     text-align: center;
-    /* 确保内部文字居中 */
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
 }
