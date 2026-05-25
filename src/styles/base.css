@@ -1,20 +1,12 @@
 body {
-    position: relative;
-    background-attachment: fixed;
+    margin: 0;
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('/background_windows.jpg') center/cover no-repeat;
 }
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('/background_windows.jpg');
-    background-size: cover;
-    background-position: center;
-    z-index: -1;
-}
 .glass-card{
     padding:40px;
     width:300px;
