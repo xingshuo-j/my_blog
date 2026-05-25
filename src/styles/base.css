@@ -1,20 +1,24 @@
 body {
     margin: 0;
-    height:100vh;
+    min-height: 100vh;
+    /* 改为 min-height，更灵活 */
     display: flex;
     justify-content: center;
     align-items: center;
     background: url('/background_windows.jpg') center/cover no-repeat;
+    font-family: system-ui, -apple-system, sans-serif;
 }
 
-.glass-card{
-    padding:40px;
-    width:300px;
-    color:white;
-    background:rgba(255,255,255,0.15);
+.glass-card {
+    padding: 40px;
+    width: 300px;
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    /* 确保内部文字居中 */
 }
