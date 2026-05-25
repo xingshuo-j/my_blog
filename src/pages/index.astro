@@ -5,18 +5,49 @@ import "../styles/base.css";
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
         <title>xing's blog</title>
         <style>
-            .title {
-                color: #ff6b6b;
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    "Georgia", "Times New Roman", "Microsoft YaHei", serif;
+                background: linear-gradient(135deg, #fff5e6 0%, #ffe8d6 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .bg-wrapper {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .content {
                 text-align: center;
+            }
+
+            .title {
+                color: #e67e22; /* 暖橙色 */
+                font-size: 52px;
+                font-weight: 300; /* 柔和字重 */
+                font-family:
+                    "Georgia", "Times New Roman", "Microsoft YaHei", serif;
+                font-style: italic; /* 斜体增加柔和感 */
+                letter-spacing: 4px; /* 字符间距 */
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* 轻微阴影 */
                 overflow: hidden;
                 white-space: nowrap;
-                animation: typing 2s steps(20, end);
-                font-size: 42px;
-                font-weight: 300;
-                font-family: "Georgia", serif;
-                font-style: italic;
+                display: inline-block;
+                width: 0;
+                animation: typing 5s steps(20, end) forwards;
             }
 
             @keyframes typing {
@@ -28,22 +59,29 @@ import "../styles/base.css";
                 }
             }
 
-            /* 需要给 h1 添加 inline-block 或 block 并设置宽度 */
-            .title {
-                display: inline-block;
-                width: 0;
-                animation: typing 2s steps(30, end) forwards;
+            /* 添加一个闪烁的光标效果（可选） */
+            .title::after {
+                content: "|";
+                color: #e67e22;
+                opacity: 0;
+                animation: blink 0.8s infinite;
             }
 
-            .content {
-                text-align: center;
+            @keyframes blink {
+                0%,
+                100% {
+                    opacity: 0;
+                }
+                50% {
+                    opacity: 1;
+                }
             }
         </style>
     </head>
     <body>
         <div class="bg-wrapper">
             <div class="content">
-                <h1 class="title">Have A Nice Day!</h1>
+                <h1 class="title">Have  A  Nice  Day!</h1>
             </div>
         </div>
     </body>
