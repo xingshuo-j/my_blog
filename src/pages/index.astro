@@ -1,6 +1,10 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 
+const talkModules = import.meta.glob('../small_talk/*.md', { eager: true });
+const talkEntries = Object.values(talkModules)
+    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
+
 const learnArticles = [
   {
     title: "KVM 实用操作记录",
@@ -32,9 +36,17 @@ const learnArticles = [
         <div class="small-talk-wrapper">
             <h2 class="small-talk-heading">xing的碎碎念</h2>
             <div class="small-talk-bubbles" id="small-talk-bubbles">
-                <div class="talk-bubble">
-                    <p class="talk-bubble-text">暂无内容，敬请期待</p>
-                </div>
+                {talkEntries.length === 0 && (
+                    <div class="talk-bubble">
+                        <p class="talk-bubble-text">暂无内容</p>
+                    </div>
+                )}
+                {talkEntries.map(entry => (
+                    <div class="talk-bubble">
+                        <div class="talk-bubble-text"><entry.Content /></div>
+                        <div class="talk-bubble-time">{entry.frontmatter.date}</div>
+                    </div>
+                ))}
             </div>
         </div>
     </div>
