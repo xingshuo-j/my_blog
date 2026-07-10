@@ -39,7 +39,7 @@ const othEntries = Object.values(othModules)
                     </div>
                 )}
                 {talkEntries.map(entry => (
-                    <div class={"talk-bubble" + (entry.frontmatter.type ? " " + entry.frontmatter.type : "")}>
+                    <div class="talk-bubble">
                         <div class="talk-bubble-text"><entry.Content /></div>
                         <div class="talk-bubble-time">{entry.frontmatter.date}</div>
                     </div>

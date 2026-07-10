@@ -172,6 +172,14 @@ window.showSmallTalk = function() {
 })();
 
 })();
+
+// 修复气泡内 ~~被删文字~~ 渲染为 <del>
+(function(){
+  var bs = document.querySelectorAll('.talk-bubble-text');
+  for (var i=0; i<bs.length; i++) {
+    bs[i].innerHTML = bs[i].innerHTML.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  }
+})();
 </script>
     </body>
 </html>
