@@ -125,7 +125,7 @@ window.switchSection = function(name) {
 };
 
 window.showDailyImage = function() {
-  var dv = document.getElementById('section-daily');
+  var dv = document.getElementById('daily-image-view');
   if (!dv) return;
   var imgs = window.__images;
   if (!imgs || imgs.length === 0) { dv.innerHTML = '<div class=daily-image-empty>暂无图片</div>'; return; }
