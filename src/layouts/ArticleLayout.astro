@@ -1,0 +1,53 @@
+---
+import "../../style/base.css";
+const { frontmatter } = Astro.props;
+---
+
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>{frontmatter?.title || "文章"} | xing's blog</title>
+    </head>
+    <body>
+        <div id="highlight-gradient"></div>
+        <div class="layout-wrapper full">
+            <nav class="navbar" id="navbar">
+                <a href="/" class="nav-logo">xing's blog</a>
+                <a href="/learn/" class="overlay-close-btn">&#x2190; 返回</a>
+            </nav>
+
+            <div class="article-page-wrapper">
+                <article class="article-content card-style">
+                    <slot />
+                </article>
+            </div>
+
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        <span>&copy; 2026 xing's blog</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <script>
+            (function() {
+                var navbar = document.getElementById('navbar');
+                if (!navbar) return;
+                function onScroll() {
+                    if (window.scrollY > 10) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                }
+                window.addEventListener('scroll', onScroll, { passive: true });
+                onScroll();
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,177 @@
+---
+import "../../style/base.css";
+
+const { title = "xing's blog" } = Astro.props;
+const imageModules = import.meta.glob('../image/*.{png,jpg,jpeg,webp,gif,svg}', { eager: true });
+const imageUrls = Object.values(imageModules).map(m => { const img = m.default; return typeof img === 'string' ? img : img.src; });
+---
+
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>{title}</title>
+    </head>
+    <body>
+        <div id="highlight-gradient"></div>
+
+                <!-- 侧边栏 — DeepSeek 风格会话栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-inner">
+                <!-- 顶部个人信息 -->
+                <div class="sidebar-top">
+                    <div class="sidebar-toggle-wrap">
+                        <button class="sidebar-toggle" onclick="toggleSidebar()"><span id="toggle-icon">&#x25C0;</span></button>
+                    </div>
+                    <div class="sidebar-profile">
+                        <img src="/favicon.ico" alt="avatar" class="profile-avatar-img">
+                        <div class="profile-info">
+                            <h4 class="profile-name"></h4>
+                            <p class="profile-bio"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 菜单列表 -->
+                <div class="sidebar-body">
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item active" onclick="switchSection('small_talk')">
+                            <span class="sidebar-menu-text">xing的碎碎念</span>
+                        </li>
+                        <li class="sidebar-menu-item" onclick="switchSection('learn')">
+                            <span class="sidebar-menu-text">学习杂记</span>
+                        </li>
+                        <li class="sidebar-menu-item" onclick="switchSection('life')">
+                            <span class="sidebar-menu-text">闲鱼生存日记</span>
+                        </li>
+                        <li class="sidebar-menu-item" onclick="switchSection('oth')">
+                            <span class="sidebar-menu-text">杂言小计</span>
+                        </li>
+                        <li class="sidebar-menu-item" onclick="switchSection('daily')">
+                            <span class="sidebar-menu-text">每日一图</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 底部 -->
+                <div class="sidebar-footer"></div>
+            </div>
+        </aside><!-- 主内容区 — 有左侧边距 -->
+        <div class="layout-wrapper" id="content-area">
+            <nav class="navbar">
+                <a href="/" class="nav-logo">xing's blog</a>
+                <div class="nav-right"></div>
+            </nav>
+
+            <div class="main-area">
+                <div class="content" id="content">
+                    <slot />
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        <span>&copy; 2026 xing's blog</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 文章覆盖层 -->
+        <div id="article-overlay" class="overlay-hidden overlay-fullscreen">
+            <div class="overlay-navbar">
+                <a href="/" class="nav-logo">xing's blog</a>
+                <button class="overlay-close-btn" onclick="closeOverlay()">&#x2715; 关闭</button>
+            </div>
+            <div class="overlay-scroll">
+                <div id="overlay-content" class="overlay-article-body">
+                    <div class="overlay-loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <script id="image-data" type="application/json" set:html={JSON.stringify(imageUrls)}></script>
+
+        <script>
+(function() {
+var urls;
+try { urls = JSON.parse(document.getElementById('image-data').textContent); } catch(e) { urls = []; }
+window.__images = urls;
+
+var allItems = document.querySelectorAll('.sidebar-menu-item');
+
+window.toggleSidebar = function() {
+  var s = document.getElementById('sidebar');
+  var c = document.getElementById('content-area');
+  var icon = document.getElementById('toggle-icon');
+  s.classList.toggle('collapsed');
+  c.classList.toggle('expanded');
+  if (icon) icon.textContent = s.classList.contains('collapsed') ? '\u25B6' : '\u25C0';
+};
+
+window.switchSection = function(name) {
+  for (var i = 0; i < allItems.length; i++) allItems[i].classList.remove('active');
+  var idx = {small_talk:0,learn:1,life:2,oth:3,daily:4}[name];
+  if (idx !== undefined && allItems[idx]) allItems[idx].classList.add('active');
+  var ss = document.querySelectorAll('.section-content');
+  for (var i = 0; i < ss.length; i++) ss[i].style.display = 'none';
+  var s = document.getElementById('section-' + name);
+  if (s) s.style.display = 'block';
+  if (name === 'daily') window.showDailyImage();
+            if (name === 'small_talk') window.showSmallTalk();
+};
+
+window.showDailyImage = function() {
+  var dv = document.getElementById('section-daily');
+  if (!dv) return;
+  var imgs = window.__images;
+  if (!imgs || imgs.length === 0) { dv.innerHTML = '<div class=daily-image-empty>暂无图片</div>'; return; }
+  // 以日期为种子每天选同一张图
+  var d = new Date();
+  var seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
+  var idx = seed % imgs.length;
+  dv.innerHTML = '<img src="' + imgs[idx] + '" alt="每日一图" class="daily-image-display">';
+};
+
+window.openArticle = function(url) {
+  var ov = document.getElementById('article-overlay');
+  var ct = document.getElementById('overlay-content');
+  ov.classList.remove('overlay-hidden');
+  document.body.style.overflow = 'hidden';
+  ct.innerHTML = '<div class=overlay-loading>加载中...</div>';
+  fetch(url).then(function(r){return r.text();}).then(function(h){
+    var a = new DOMParser().parseFromString(h,'text/html').querySelector('.article-content');
+    if (a) { ct.innerHTML = a.innerHTML; } else { window.location.href = url; }
+    ov.scrollTop = 0;
+  }).catch(function(){ window.location.href = url; });
+};
+
+window.closeOverlay = function() {
+  document.getElementById('article-overlay').classList.add('overlay-hidden');
+  document.body.style.overflow = '';
+};
+
+window.showSmallTalk = function() {
+  // 内容由 index.astro 预渲染，无需额外操作
+};
+
+// 初始加载每日一图
+(function(){
+  var dv = document.getElementById('daily-image-view');
+  if (!dv) return;
+  var imgs = window.__images;
+  if (!imgs || imgs.length === 0) return;
+  // 以日期为种子每天选同一张图
+  var d = new Date();
+  var seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
+  var idx = seed % imgs.length;
+  dv.innerHTML = '<img src="' + imgs[idx] + '" alt="每日一图" class="daily-image-display">';
+})();
+
+})();
+</script>
+    </body>
+</html>

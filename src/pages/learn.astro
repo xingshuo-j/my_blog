@@ -1,0 +1,39 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+const learnArticles = [
+  {
+    title: "KVM 实用操作记录",
+    excerpt: "记录一些KVM需要但老是忘记的操作，包括创建共享文件夹、virtio-fs服务配置等。",
+    path: "/learn/kvm-readme",
+    category: "虚拟化",
+    date: "2026-07-10"
+  },
+  {
+    title: "Debian 系统错误修复记录",
+    excerpt: "记录使用Debian系统遇到的错误修复方法，包括键盘休眠问题、KVM USB直连、桌面环境修复等。",
+    path: "/learn/debain-fix",
+    category: "Linux",
+    date: "2026-07-10"
+  }
+];
+---
+
+<MainLayout title="学习杂记 | xing's blog">
+    <div class="category-content">
+        <h2 class="category-title">学习杂记</h2>
+        <div class="learn-cards-grid">
+            {learnArticles.map(article => (
+                <a href="javascript:void(0)" class="learn-card" data-path={article.path} onclick="openArticle(this.dataset.path)">
+                    <div class="learn-card-category">{article.category}</div>
+                    <h3 class="learn-card-title">{article.title}</h3>
+                    <p class="learn-card-excerpt">{article.excerpt}</p>
+                    <div class="learn-card-footer">
+                        <span class="learn-card-date">{article.date}</span>
+                        <span class="learn-card-read">阅读全文 &rarr;</span>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </div>
+</MainLayout>

@@ -1,190 +1,82 @@
 ---
-import "../styles/base.css";
+import MainLayout from "../layouts/MainLayout.astro";
+
+const learnArticles = [
+  {
+    title: "KVM 实用操作记录",
+    excerpt: "记录一些KVM需要但老是忘记的操作，包括创建共享文件夹、virtio-fs服务配置等。",
+    path: "/learn/kvm-readme",
+    category: "虚拟化",
+    date: "2026-07-10"
+  },
+  {
+    title: "Debian 系统错误修复记录",
+    excerpt: "记录使用Debian系统遇到的错误修复方法，包括键盘休眠问题、KVM USB直连、桌面环境修复等。",
+    path: "/learn/debain-fix",
+    category: "Linux",
+    date: "2026-07-10"
+  }
+];
 ---
 
-<html lang="zh-CN">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" href="/favicon.ico" />
-        <title>xing's blog</title>
-    </head>
-    <body>
-        <div id="home">
-            <!-- 导航栏 -->
-            <div id="header">
-                <div id="blogTitle">
-                    <a id="lnkBlogTitle" href="/">xing's blog</a>
-                </div>
-                <div id="navigator">
-                    <ul id="navList">
-                        <li><a class="menu" href="#"></a></li>
-                        <li><a class="menu" href="#"></a></li>
-                        <li><a class="menu" href="#"></a></li>
-                        <li><a class="menu" href="#"></a></li>
-                        <li><a class="menu" href="#"></a></li>
-                        <li><a class="menu" href="#"></a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- 主要内容区域 -->
-            <div id="main">
-                <div id="mainContent">
-                    <div class="forFlow">
-                        <!-- 文章列表 -->
-                        <div class="day">
-                            <div class="dayTitle">
-                                <a href="#"></a>
-                            </div>
-
-                            <div class="post">
-                                <div class="postTitle">
-                                    <a class="postTitle2" href="#"></a>
-                                </div>
-                                <div class="postCon">
-                                    <div class="c_b_p_desc">
-                                        <a href="#" class="c_b_p_desc_readmore"></a>
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                                <div class="postDesc"></div>
-                            </div>
-
-                            <div class="post">
-                                <div class="postTitle">
-                                    <a class="postTitle2" href="#"></a>
-                                </div>
-                                <div class="postCon">
-                                    <div class="c_b_p_desc">
-                                        <a href="#" class="c_b_p_desc_readmore"></a>
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                                <div class="postDesc"></div>
-                            </div>
-                        </div>
-
-                        <div class="day">
-                            <div class="dayTitle">
-                                <a href="#"></a>
-                            </div>
-
-                            <div class="post">
-                                <div class="postTitle">
-                                    <a class="postTitle2" href="#"></a>
-                                </div>
-                                <div class="postCon">
-                                    <div class="c_b_p_desc">
-                                        <a href="#" class="c_b_p_desc_readmore"></a>
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                                <div class="postDesc"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 侧边栏 -->
-                <div id="sideBar">
-                    <div id="sideBarMain">
-                        <!-- 个人信息 -->
-                        <div id="blog-news">
-                            <div id="blog-news-block">
-                                <div id="blog-news-avatar">
-                                    <div id="blog-news-avatar-img"></div>
-                                </div>
-                                <div id="profile_block"></div>
-                            </div>
-                        </div>
-
-                        <!-- 公告 -->
-                        <div id="calendar" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <div id="blog-calendar"></div>
-                        </div>
-
-                        <!-- 分类 -->
-                        <div id="sideBarCategory" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <ul>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- 最新评论 -->
-                        <div id="recent_comments_wrap" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <ul class="recent_comments">
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- 阅读排行 -->
-                        <div id="sideBarReading" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <ul>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- 推荐排行 -->
-                        <div id="sideBarRecommended" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <ul>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- 标签 -->
-                        <div id="sideBarTags" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <div id="tag_cloud">
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                                <a href="#"></a>
-                            </div>
-                        </div>
-
-                        <!-- 友情链接 -->
-                        <div id="blog-sidecolumn" class="newsItem">
-                            <div class="catListTitle"></div>
-                            <ul>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                                <li><a href="#"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="clear"></div>
-            </div>
-
-            <!-- 页脚 -->
-            <div id="footer"></div>
+<MainLayout title="xing's blog">
+    <!-- 每日一图 -->
+    <div id="section-daily" class="section-content" style="display:none">
+        <div id="daily-image-view" class="daily-view-init">
+            <div class="daily-image-empty">加载中...</div>
         </div>
-    </body>
-</html>
+    </div>
+
+    <!-- xing的碎碎念 — 气泡框居中排列 -->
+    <div id="section-small_talk" class="section-content">
+        <div class="small-talk-wrapper">
+            <h2 class="small-talk-heading">xing的碎碎念</h2>
+            <div class="small-talk-bubbles" id="small-talk-bubbles">
+                <div class="talk-bubble">
+                    <p class="talk-bubble-text">暂无内容，敬请期待</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 学习杂记 -->
+    <div id="section-learn" class="section-content" style="display:none">
+        <div class="category-content">
+            <h2 class="category-title">学习杂记</h2>
+            <div class="learn-cards-grid">
+                {learnArticles.map(article => (
+                    <a href="javascript:void(0)" class="learn-card" data-path={article.path} onclick="openArticle(this.dataset.path)">
+                        <div class="learn-card-category">{article.category}</div>
+                        <h3 class="learn-card-title">{article.title}</h3>
+                        <p class="learn-card-excerpt">{article.excerpt}</p>
+                        <div class="learn-card-footer">
+                            <span class="learn-card-date">{article.date}</span>
+                            <span class="learn-card-read">阅读全文 &rarr;</span>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
+    </div>
+
+    <!-- 闲鱼生存日记 -->
+    <div id="section-life" class="section-content" style="display:none">
+        <div class="category-content">
+            <h2 class="category-title">闲鱼生存日记</h2>
+            <div class="category-empty">
+                <p>暂无内容，敬请期待</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 杂言小计 -->
+    <div id="section-oth" class="section-content" style="display:none">
+        <div class="category-content">
+            <h2 class="category-title">杂言小计</h2>
+            <div class="category-empty">
+                <p>暂无内容，敬请期待</p>
+            </div>
+        </div>
+    </div>
+</MainLayout>
+
