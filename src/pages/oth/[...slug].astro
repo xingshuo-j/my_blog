@@ -1,0 +1,17 @@
+---
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = import.meta.glob('../../oth/*.md', { eager: true });
+  return Object.entries(entries).map(function([_, module]) {
+    return { params: { slug: module.frontmatter.slug }, props: { entry: module } };
+  });
+}
+
+const { entry } = Astro.props;
+const { frontmatter } = entry;
+---
+
+<ArticleLayout frontmatter={frontmatter}>
+  <entry.Content />
+</ArticleLayout>

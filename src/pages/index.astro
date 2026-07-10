@@ -5,22 +5,19 @@ const talkModules = import.meta.glob('../small_talk/*.md', { eager: true });
 const talkEntries = Object.values(talkModules)
     .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
 
-const learnArticles = [
-  {
-    title: "KVM 实用操作记录",
-    excerpt: "记录一些KVM需要但老是忘记的操作，包括创建共享文件夹、virtio-fs服务配置等。",
-    path: "/learn/kvm-readme",
-    category: "虚拟化",
-    date: "2026-07-10"
-  },
-  {
-    title: "Debian 系统错误修复记录",
-    excerpt: "记录使用Debian系统遇到的错误修复方法，包括键盘休眠问题、KVM USB直连、桌面环境修复等。",
-    path: "/learn/debain-fix",
-    category: "Linux",
-    date: "2026-07-10"
-  }
-];
+const learnModules = import.meta.glob('../learn/*.md', { eager: true });
+const learnEntries = Object.values(learnModules)
+    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
+
+const lifeModules = import.meta.glob('../life/*.md', { eager: true });
+const lifeEntries = Object.values(lifeModules)
+    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
+
+const othModules = import.meta.glob('../oth/*.md', { eager: true });
+const othEntries = Object.values(othModules)
+    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
+
+
 ---
 
 <MainLayout title="xing's blog">
@@ -56,13 +53,16 @@ const learnArticles = [
         <div class="category-content">
             <h2 class="category-title">学习杂记</h2>
             <div class="learn-cards-grid">
-                {learnArticles.map(article => (
-                    <a href="javascript:void(0)" class="learn-card" data-path={article.path} onclick="openArticle(this.dataset.path)">
-                        <div class="learn-card-category">{article.category}</div>
-                        <h3 class="learn-card-title">{article.title}</h3>
-                        <p class="learn-card-excerpt">{article.excerpt}</p>
+                {learnEntries.length === 0 && (
+                    <div class="category-empty"><p>暂无内容，敬请期待</p></div>
+                )}
+                {learnEntries.map(entry => (
+                    <a href="javascript:void(0)" class="learn-card" data-path={"/learn/" + entry.frontmatter.slug} onclick="openArticle(this.dataset.path)">
+                        <div class="learn-card-category">{entry.frontmatter.category}</div>
+                        <h3 class="learn-card-title">{entry.frontmatter.title}</h3>
+                        <p class="learn-card-excerpt">{entry.frontmatter.excerpt}</p>
                         <div class="learn-card-footer">
-                            <span class="learn-card-date">{article.date}</span>
+                            <span class="learn-card-date">{entry.frontmatter.date}</span>
                             <span class="learn-card-read">阅读全文 &rarr;</span>
                         </div>
                     </a>
@@ -75,9 +75,23 @@ const learnArticles = [
     <div id="section-life" class="section-content" style="display:none">
         <div class="category-content">
             <h2 class="category-title">闲鱼生存日记</h2>
-            <div class="category-empty">
-                <p>暂无内容，敬请期待</p>
-            </div>
+            {lifeEntries.length === 0 ? (
+                <div class="category-empty"><p>暂无内容，敬请期待</p></div>
+            ) : (
+                <div class="learn-cards-grid">
+                    {lifeEntries.map(entry => (
+                        <a href="javascript:void(0)" class="learn-card" data-path={"/life/" + entry.frontmatter.slug} onclick="openArticle(this.dataset.path)">
+                            <div class="learn-card-category">{entry.frontmatter.category}</div>
+                            <h3 class="learn-card-title">{entry.frontmatter.title}</h3>
+                            <p class="learn-card-excerpt">{entry.frontmatter.excerpt}</p>
+                            <div class="learn-card-footer">
+                                <span class="learn-card-date">{entry.frontmatter.date}</span>
+                                <span class="learn-card-read">阅读全文 &rarr;</span>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )}
         </div>
     </div>
 
@@ -85,9 +99,23 @@ const learnArticles = [
     <div id="section-oth" class="section-content" style="display:none">
         <div class="category-content">
             <h2 class="category-title">杂言小计</h2>
-            <div class="category-empty">
-                <p>暂无内容，敬请期待</p>
-            </div>
+            {othEntries.length === 0 ? (
+                <div class="category-empty"><p>暂无内容，敬请期待</p></div>
+            ) : (
+                <div class="learn-cards-grid">
+                    {othEntries.map(entry => (
+                        <a href="javascript:void(0)" class="learn-card" data-path={"/oth/" + entry.frontmatter.slug} onclick="openArticle(this.dataset.path)">
+                            <div class="learn-card-category">{entry.frontmatter.category}</div>
+                            <h3 class="learn-card-title">{entry.frontmatter.title}</h3>
+                            <p class="learn-card-excerpt">{entry.frontmatter.excerpt}</p>
+                            <div class="learn-card-footer">
+                                <span class="learn-card-date">{entry.frontmatter.date}</span>
+                                <span class="learn-card-read">阅读全文 &rarr;</span>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )}
         </div>
     </div>
 </MainLayout>
