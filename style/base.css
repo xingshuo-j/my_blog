@@ -1118,3 +1118,34 @@ a:hover {
   margin-top: 0.25rem;
 }
 
+
+/* ========== 气泡框个性样式 ========== */
+.talk-bubble.highlight {
+  background: hsl(38 40% 93%);
+  border-color: hsl(38 40% 82%);
+}
+.talk-bubble.highlight:hover {
+  box-shadow: 0 2px 10px hsla(38, 40%, 70%, 0.25);
+}
+
+.talk-bubble.thought {
+  border-style: dashed;
+  background: hsl(var(--background) / 1);
+  border-color: hsl(var(--border) / 0.8);
+}
+.talk-bubble.thought:hover {
+  border-style: dashed;
+}
+
+.talk-bubble.warning {
+  background: hsl(30 80% 94%);
+  border-color: hsl(30 70% 80%);
+}
+
+.talk-bubble.right {
+  align-self: flex-end;
+  text-align: right;
+}
+.talk-bubble.right .talk-bubble-time {
+  text-align: right;
+}
