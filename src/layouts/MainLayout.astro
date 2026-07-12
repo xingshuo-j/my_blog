@@ -52,6 +52,9 @@ const imageUrls = Object.values(imageModules).map(m => { const img = m.default; 
                         <li class="sidebar-menu-item" onclick="switchSection('daily')">
                             <span class="sidebar-menu-text">每日一图</span>
                         </li>
+                        <li class="sidebar-menu-item" onclick="switchSection('friends')">
+                            <span class="sidebar-menu-text">友邻</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -114,7 +117,7 @@ window.toggleSidebar = function() {
 
 window.switchSection = function(name) {
   for (var i = 0; i < allItems.length; i++) allItems[i].classList.remove('active');
-  var idx = {small_talk:0,learn:1,life:2,oth:3,daily:4}[name];
+  var idx = {small_talk:0,learn:1,life:2,oth:3,daily:4,friends:5}[name];
   if (idx !== undefined && allItems[idx]) allItems[idx].classList.add('active');
   var ss = document.querySelectorAll('.section-content');
   for (var i = 0; i < ss.length; i++) ss[i].style.display = 'none';
