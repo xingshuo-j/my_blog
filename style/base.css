@@ -596,6 +596,7 @@ a:hover {
   .learn-cards-grid { grid-template-columns: 1fr; }
   .overlay-article-body { padding: 1.5rem; }
   .overlay-article-body h1 { font-size: 1.375rem; }
+}
 .sidebar {
   position: fixed;
   left: 0;
@@ -1065,9 +1066,9 @@ a:hover {
   .learn-cards-grid { grid-template-columns: 1fr; }
   .overlay-article-body { padding: 1.5rem; }
   .overlay-article-body h1 { font-size: 1.375rem; }
-}
   .learn-card { padding: 1.25rem; }
   .navbar { margin-bottom: 1rem; }
+}
 /* ========== xing的碎碎念 — 气泡框 ========== */
 .small-talk-wrapper {
   max-width: 600px;
@@ -1106,7 +1107,6 @@ a:hover {
   transform: translateY(-2px);
 }
 
-}
 .talk-bubble-text {
   font-size: 0.9375rem;
   line-height: 1.7;
