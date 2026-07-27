@@ -37,6 +37,17 @@
 
 **全部 P0~P5 通体完成，已绑定正式域名 `https://www.xinglin.info`**。剩余低优先级：P1-5b（sidebar 新旧 CSS 块人工合并 + 视觉回归）、RSS（`@astrojs/rss`）。
 
+## 禁区 / 不要做（踩过的坑）
+
+- **不要给 `astro.config.mjs` 加 `remarkPlugins`**：Astro 7 默认用 Satteri 处理器，已内置 GFM（`~~删除线~~` 原生渲染为 `<del>`）。配 `remarkPlugins` 会触发 `@astrojs/markdown-remark` 缺失错误。早期因此误装过 `remark-gfm`，已卸载。
+- **不要改 `site` 配置里的域名**：`https://www.xinglin.info` 是正式线上域名（Vercel 穿透 → Cloudflare → 阿里云重定向至此）。动它会让 sitemap/canonical/OG 全错。
+- **不要 `npm audit fix` / `npm audit fix --force`**：当前 5 项 sharp/libvips CVE 由 `@astrojs/sitemap` 间接带入，仅在处理恶意图片时触发；本项目纯静态、不接受外部图片上传，风险极低。强升会大改依赖树。详见 `security_audit.md`。
+- **不要碰 `style/base.css` 的两处 `.sidebar` 规则块**（约第 147 行 与第 312 行）：它们是新旧两版样式互相覆盖后的最终态，必须人工算清属性 + 视觉回归才能合并（P1-5b 待办）。盲改会破坏侧边栏布局。
+- **不要恢复内联 `onclick=`**：侧边栏菜单已改为事件委托 + ARIA；模板里 `<li>` 用 `data-section` 驱动。新增交互项也走事件委托。
+- **frontmatter 日期必须加引号**：`date: 2026-07-10` 会被 YAML 解析成 Date 对象，页面显示成 `2026-07-10T00:00:00.000Z`；`date:2026-07-10 21:15`（冒号后无空格）会让日期完全不渲染。正确写法：`date: "2026-07-10 21:15"`。日期解析走 `src/utils/content.ts` 的 `parseDate`。
+- **不要删 `src/image/` 下的 `daily-*.webp`**：每日一图由 `import.meta.glob` 扫描这些文件，文件名是语义化的，缺失会让每日一图区为空。
+- **不要把 `dist/` 或 `node_modules/` 提交进 git**（已 `.gitignore`）。
+
 ## 项目速览
 
 纯前端 Astro 7 静态博客（无后端/数据库）。内容 = 本地 Markdown（`src/{learn,life,oth,small_talk}/`），`import.meta.glob` 扫描 + `[...slug].astro` 动态路由。样式集中在 `style/base.css`。构建 `npm run build` → `dist/`（纯静态，任意托管可部署）。内容新增方式见根目录 `README.md`。

@@ -2,6 +2,14 @@
 
 > 记录每次优化的变更内容。最新记录在最上方。
 
+## 2026-07-28 — 绑定正式域名
+
+**类型**：部署配置
+
+**变更内容**：将 `astro.config.mjs` 的 `site` 与 `public/robots.txt` 的 Sitemap 地址从占位符 `https://YOUR-DOMAIN.example` 替换为正式域名 `https://www.xinglin.info`（Vercel 内网穿透 → Cloudflare 解析 → 重定向至该阿里云域名）。同步更新 build/ 文档中相关占位引用。
+
+**构建验证**：canonical、sitemap-0.xml、robots.txt 均输出正确绝对 URL。
+
 ## 2026-07-28 — P4/P5 批次：可维护性与依赖收尾
 
 **类型**：可维护性 + 依赖（P4/P5）
