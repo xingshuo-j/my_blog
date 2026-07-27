@@ -22,7 +22,7 @@ npm run preview   # 本地验证构建产物
 ```nginx
 server {
     listen 443 ssl;
-    server_name your-domain.com;
+    server_name www.xinglin.info;
     root /var/www/my_blog/dist;
     index index.html;
 
@@ -63,8 +63,7 @@ server {
 
 ## 4. 站点配置
 
-- [x] ✅ `astro.config.mjs` 已配置 `site` + `@astrojs/sitemap`（2026-07-28），自动生成 `sitemap-index.xml`、`robots.txt`、canonical 与 OG 绝对 URL
-- [ ] ⚠️ **部署前必做**：将 `astro.config.mjs` 和 `public/robots.txt` 中的 `https://YOUR-DOMAIN.example` 替换为真实域名，否则 sitemap/canonical 会指向错误地址
+- [x] ✅ `astro.config.mjs` 已配置 `site: 'https://www.xinglin.info'` + `@astrojs/sitemap`（2026-07-28），自动生成 `sitemap-index.xml`、`robots.txt`、canonical 与 OG 绝对 URL
 - [ ] 部署后验证 HTTPS 与 HSTS
 - [ ] 友邻外链 `http://` → `https://`（目标站支持时）
 

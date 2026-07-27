@@ -54,7 +54,7 @@
 
 ### P3 — SEO / 可发现性
 
-9. ~~`astro.config.mjs` 缺少 `site` 配置~~（✅ 2026-07-28 已添加，当前为占位 `https://YOUR-DOMAIN.example`，部署前须替换为真实域名）
+9. ~~`astro.config.mjs` 缺少 `site` 配置~~（✅ 2026-07-28 已配置 `site: 'https://www.xinglin.info'`）
 10. SEO 基础设施（✅ 2026-07-28）：已添加 `<meta name="description">`（首页默认文案、文章页取自 `excerpt`）、Open Graph/Twitter Card、canonical、`robots.txt`、`@astrojs/sitemap`、`404.astro`。**未做**：RSS（低优先级，可后续用 `@astrojs/rss`）。
 
 ### P4 — 可维护性

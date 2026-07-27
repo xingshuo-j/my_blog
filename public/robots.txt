@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR-DOMAIN.example/sitemap-index.xml
+Sitemap: https://www.xinglin.info/sitemap-index.xml
