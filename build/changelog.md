@@ -2,6 +2,23 @@
 
 > 记录每次优化的变更内容。最新记录在最上方。
 
+## 2026-07-28 — P1 批次：性能优化
+
+**类型**：性能（P1）
+
+**变更内容**：
+1. **图片压缩（最大收益）**：
+   - `src/image/` 9 张 JPG（4.2MB，最大 900K）→ WebP q80、最大边 1920px、去 EXIF（1.3MB，最大 360K）；重命名 `Weixin Image_*.jpg` → `daily-NN.webp`
+   - 友邻头像 `public/friends/` 316K → WebP 85K，同步更新 index.astro 引用并修复空 `alt`
+2. **CSS 去重**：删除 312–599 行完全重复区块（与 782–1045 逐字节相同 + 媒体查询被后版覆盖）；合并第三处 daily 覆盖规则与 `.small-talk-wrapper` 重复声明；1266 → 954 行。遗留：`.sidebar` 新旧版本块纠缠（P1-5b，需视觉回归）
+3. **卡片链接渐进增强**：4 处 `href="javascript:void(0)" + onclick` → 真实 href；MainLayout 加事件委托拦截点击（保留中键/Ctrl 新标签）；SEO 可爬取、无 JS 可用
+
+**构建验证**：`npm run build` 通过；preview 抽查首页/文章页/头像 200；产物 CSS 中 `.daily-view-init` 8处→3处、`max-height:65vh` 死规则清除；`dist/` **5.2MB → 2.5MB**
+
+**下一步**：P2/P3 批次（set:html 转义、site 配置 + sitemap、meta description、404 页面）
+
+---
+
 ## 2026-07-28 — P0 批次：正确性缺陷修复
 
 **类型**：Bug 修复（P0）

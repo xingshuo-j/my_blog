@@ -10,7 +10,7 @@ const learnEntries = sortByDateDesc(Object.values(import.meta.glob('../learn/*.m
         <h2 class="category-title">学习杂记</h2>
         <div class="learn-cards-grid">
             {learnEntries.map(entry => (
-                <a href="javascript:void(0)" class="learn-card" data-path={"/learn/" + entry.frontmatter.slug} onclick="openArticle(this.dataset.path)">
+                <a href={"/learn/" + entry.frontmatter.slug} class="learn-card">
                     <div class="learn-card-category">{entry.frontmatter.category}</div>
                     <h3 class="learn-card-title">{entry.frontmatter.title}</h3>
                     <p class="learn-card-excerpt">{entry.frontmatter.excerpt}</p>

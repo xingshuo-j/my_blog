@@ -161,6 +161,19 @@ window.showSmallTalk = function() {
   // 内容由 index.astro 预渲染，无需额外操作
 };
 
+// 文章卡片：真实链接 + 点击拦截实现覆层阅读（渐进增强）
+// 无 JS 时走正常跳转；中键/ctrl+click 可新标签打开
+document.addEventListener('click', function(e) {
+  var t = e.target;
+  var card = t && t.closest ? t.closest('a.learn-card') : null;
+  if (!card) return;
+  if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+  var href = card.getAttribute('href');
+  if (!href) return;
+  e.preventDefault();
+  window.openArticle(href);
+});
+
 // 初始加载每日一图
 (function(){
   var dv = document.getElementById('daily-image-view');
