@@ -1,9 +1,8 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { sortByDateDesc } from "../utils/content";
 
-const learnModules = import.meta.glob('../learn/*.md', { eager: true });
-const learnEntries = Object.values(learnModules)
-    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
+const learnEntries = sortByDateDesc(Object.values(import.meta.glob('../learn/*.md', { eager: true })));
 ---
 
 <MainLayout title="学习杂记 | xing's blog">

@@ -19,17 +19,18 @@
 
 ### P0 — 正确性缺陷（Bug 级）
 
-1. **remark-gfm 未启用**
-   - 现状：`remark-gfm@4.0.1` 已在 dependencies，但 `astro.config.mjs` 中 `remarkPlugins: []` 为空，导致 `~~删除线~~` 无法渲染，被迫在客户端用 `innerHTML.replace` 正则 hack 补救（MainLayout.astro 尾部脚本）。
-   - 方案：`astro.config.mjs` 中注册 `remarkPlugins: [remarkGfm]`，删除客户端 hack 脚本。
+> ✅ 本批次已于 2026-07-28 全部完成，详见 `changelog.md`。
 
-2. **日期解析跨浏览器兼容问题**
-   - 现状：frontmatter 使用 `date:2026-7-10 21:15`（空格分隔、未零填充），`new Date("2026-7-10 21:15")` 在 Safari/iOS 返回 `Invalid Date`，排序失效。
-   - 方案：统一 frontmatter 为 ISO 格式 `2026-07-10T21:15:00`；排序函数中做日期归一化兜底（空格替换为 `T`）。
+1. **~~remark-gfm 未启用~~（✅ 已解决）**
+   - 实际结论：Astro 7 默认 Markdown 处理器 Satteri 已内置 GFM（`~~删除线~~` 原生渲染为 `<del>`，已实测验证）。`remarkPlugins` 配置是遗留 unified 管线才需要的。
+   - 已执行：卸载无用依赖 `remark-gfm`；删除 MainLayout.astro 尾部客户端 innerHTML hack。
 
-3. **重复图片文件**
-   - 现状：`public/background_windows.jpg` 与 `src/image/background_windows.jpg` MD5 相同（各 832K），且 `src/image/` 下副本会被"每日一图"随机选中。
-   - 方案：删除其中一份（保留 `src/image/` 走构建管线，或保留 `public/` 并从图库排除）。
+2. **~~日期解析跨浏览器兼容问题~~（✅ 已解决）**
+   - 实际比预期更严重：`date:2026-7-10 21:15`（冒号后无空格）不是合法 YAML，日期**完全不渲染**；`date: 2026-07-10` 被解析为 Date 对象，页面显示丑陋的 `2026-07-10T00:00:00.000Z`。
+   - 已执行：5 个 md 文件 frontmatter 日期改为带引号字符串（`date: "2026-07-10 21:15"`）；新建 `src/utils/content.ts`（`parseDate` 归一化空格→`T` 兼容 Safari，`sortByDateDesc` 统一排序）；index.astro / learn.astro 改用该工具函数。
+
+3. **~~重复图片文件~~（✅ 已解决）**
+   - 已执行：删除 `src/image/background_windows.jpg`（与 public/ 重复，且 Windows 壁纸混入每日一图图库）。保留 `public/` 副本（当前无引用，如确认不再使用可后续删除，再省 832K）。
 
 ### P1 — 性能
 
@@ -76,7 +77,7 @@
 ## 三、执行顺序建议
 
 ```
-第 1 批（正确性）：P0-1 remark-gfm、P0-2 日期格式、P0-3 去重图片
+第 1 批（正确性）：P0-1 remark-gfm、P0-2 日期格式、P0-3 去重图片 ✅ 已完成
 第 2 批（性能）：  P1-4 图片压缩、P1-5 CSS 去重、P1-6 真实链接
 第 3 批（工程化）：P2-7 set:html 转义、P3-9/10 SEO 基础、P4 组件抽取
 第 4 批（收尾）：  P5 依赖升级、文档更新、提交

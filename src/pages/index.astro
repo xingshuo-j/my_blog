@@ -1,21 +1,11 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { sortByDateDesc } from "../utils/content";
 
-const talkModules = import.meta.glob('../small_talk/*.md', { eager: true });
-const talkEntries = Object.values(talkModules)
-    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
-
-const learnModules = import.meta.glob('../learn/*.md', { eager: true });
-const learnEntries = Object.values(learnModules)
-    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
-
-const lifeModules = import.meta.glob('../life/*.md', { eager: true });
-const lifeEntries = Object.values(lifeModules)
-    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
-
-const othModules = import.meta.glob('../oth/*.md', { eager: true });
-const othEntries = Object.values(othModules)
-    .sort(function(a, b) { return new Date(b.frontmatter.date) - new Date(a.frontmatter.date); });
+const talkEntries = sortByDateDesc(Object.values(import.meta.glob('../small_talk/*.md', { eager: true })));
+const learnEntries = sortByDateDesc(Object.values(import.meta.glob('../learn/*.md', { eager: true })));
+const lifeEntries = sortByDateDesc(Object.values(import.meta.glob('../life/*.md', { eager: true })));
+const othEntries = sortByDateDesc(Object.values(import.meta.glob('../oth/*.md', { eager: true })));
 
 
 ---

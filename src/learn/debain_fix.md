@@ -1,7 +1,7 @@
 ---
 title: Debian 系统错误修复记录
 category: Linux
-date: 2026-07-10
+date: "2026-07-10"
 slug: debain-fix
 excerpt: 记录使用Debian系统遇到的错误修复方法，包括键盘休眠、KVM USB直连、桌面环境修复等。
 ---

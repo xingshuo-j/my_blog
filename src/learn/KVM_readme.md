@@ -1,7 +1,7 @@
 ---
 title: KVM 实用操作记录
 category: 虚拟化
-date: 2026-07-10
+date: "2026-07-10"
 slug: kvm-readme
 excerpt: 记录一些KVM需要但老是忘记的操作，包括创建共享文件夹、virtio-fs服务配置等。
 ---

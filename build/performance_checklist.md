@@ -5,10 +5,10 @@
 
 ## 1. 资源体积
 
-- [ ] ❌ 图片压缩：`src/image/` 下 11 张 JPG 共 ~5MB，最大单张 900K，未压缩、未转 WebP/AVIF
+- [ ] ❌ 图片压缩：`src/image/` 下 10 张 JPG 共 ~4.2MB（2026-07-28 已删重复壁纸），最大单张 900K，未压缩、未转 WebP/AVIF
 - [ ] ❌ 图片尺寸：每日一图直接加载原图，无响应式多尺寸（`srcset`/`sizes`）
 - [ ] ⚠️ 图片懒加载：友邻头像已加 `loading="lazy"`，每日一图未加
-- [ ] ❌ 重复资源：`background_windows.jpg` 在 `public/` 与 `src/image/` 各存一份（各 832K）
+- [x] ✅ 重复资源：`src/image/` 下重复副本已删除（2026-07-28）；`public/` 仍有一份 832K 无引用壁纸，待确认后删除
 - [ ] ❌ 图片命名：`Weixin Image_20260711000749_9_80.jpg` 含空格与无意义命名
 
 ## 2. CSS
@@ -21,7 +21,7 @@
 ## 3. JavaScript
 
 - [x] ✅ 无重型前端框架，仅少量内联原生 JS（IIFE 隔离作用域）
-- [ ] ❌ 客户端 `innerHTML.replace` hack 渲染删除线（应改用 remark-gfm 构建期渲染后删除）
+- [x] ✅ 客户端 `innerHTML.replace` hack 已删除（2026-07-28）：Astro 7 Satteri 处理器内置 GFM，构建期原生渲染 `<del>`
 - [ ] ❌ 文章覆层 fetch 整页 HTML 再 DOMParser 解析；可考虑只渲染正文片段（低优先级）
 - [x] ✅ 滚动监听使用 `{ passive: true }`
 
@@ -46,6 +46,7 @@
 | 单张最大图 | 900 KB | < 300 KB |
 | 全局 CSS 行数 | 1266（含重复） | 去重后 ≈1100 |
 | Lighthouse Performance | 未测 | ≥ 95 |
+| `dist/` 产物体积 | 5.2 MB（2026-07-28） | < 2 MB
 
 ## 每次优化后必做
 
