@@ -1,0 +1,19 @@
+---
+/**
+ * 文章卡片（学习杂记 / 闲鱼生存日记 / 杂言小计 通用）
+ * @prop entry - import.meta.glob 的 Markdown 模块对象
+ * @prop prefix - 详情页路径前缀，如 "/learn/"
+ */
+const { entry, prefix } = Astro.props;
+const fm = entry.frontmatter;
+---
+
+<a href={`${prefix}${fm.slug}`} class="learn-card">
+    <div class="learn-card-category">{fm.category}</div>
+    <h3 class="learn-card-title">{fm.title}</h3>
+    <p class="learn-card-excerpt">{fm.excerpt}</p>
+    <div class="learn-card-footer">
+        <span class="learn-card-date">{fm.date}</span>
+        <span class="learn-card-read">阅读全文 &rarr;</span>
+    </div>
+</a>

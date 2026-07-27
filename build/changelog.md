@@ -2,6 +2,23 @@
 
 > 记录每次优化的变更内容。最新记录在最上方。
 
+## 2026-07-28 — P4/P5 批次：可维护性与依赖收尾
+
+**类型**：可维护性 + 依赖（P4/P5）
+
+**变更内容**：
+1. **组件抽取去重**：新增 `src/components/ArticleCard.astro`，index.astro（3处）与 learn.astro（1处）卡片复用；`content.ts` 新增 `buildArticlePaths`，learn/life/oth 三个 `[...slug].astro` 统一调用，消除 getStaticPaths 重复
+2. **可访问性**：侧边栏 6 个菜单 `<li>` 改 `role="button" tabindex="0" aria-label` + `data-section`；脚本加 click + keydown(Enter/Space) 事件委托，移除全部内联 `onclick="switchSection()"`
+3. **死代码清理**：删除 `showSmallTalk()` 空函数及其调用；填充空 `.profile-name`/`.profile-bio`（“xing” / “代码 · 生活 · 杂记”）；页脚硬编码 `© 2026` → 动态 `{new Date().getFullYear()}`（MainLayout + ArticleLayout）
+4. **工程细节**：`package.json` 空 `name` → `my_blog`
+5. **依赖**：astro 7.0.7 → 7.1.4（构建通过）；执行 `npm prune`（6 个 extraneous 实为 sharp 可选传递依赖，非冗余，保留）
+
+**构建验证**：`npm run build` 通过（5 页面 + sitemap）；preview 抽检首页/文章/404 均 200；文章页 meta/canonical/OG 完整，footer 年份动态；侧边栏无内联 onclick、li 具 ARIA 属性；dist 2.6MB
+
+**进度总结**：P0~P5 全部 17 项完成（唯 P1-5b sidebar CSS 块合并与 RSS 待低优先级处理）
+
+---
+
 ## 2026-07-28 — P2/P3 批次：安全加固与 SEO 基础
 
 **类型**：安全 + SEO（P2/P3）

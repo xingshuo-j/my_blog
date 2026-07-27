@@ -59,16 +59,16 @@
 
 ### P4 — 可维护性
 
-11. **代码重复**：`index.astro` 与 `learn.astro` 卡片渲染重复；三个 `[...slug].astro` 几乎相同 → 抽取 `ArticleCard.astro` 组件与共享 `getStaticPaths` 工具函数。
-12. **内联事件处理**：`onclick=` 散布在模板中 → 改为事件委托（`addEventListener` + `data-*`）。
-13. **可访问性**：侧边栏菜单 `<li onclick>` 无键盘支持 → 改用 `<button>` 或加 `tabindex` + 键盘事件；友邻头像 `alt=" "` 为空。
-14. **死代码**：`showSmallTalk()` 空函数、空的 `.profile-name`/`.profile-bio`、页脚硬编码 `© 2026`。
-15. `package.json` 的 `name` 字段为空。
+11. **~~代码重复~~（✅ 2026-07-28 已解决）**：抽取 `src/components/ArticleCard.astro`（index/learn 卡片4处复用）；`content.ts` 新增 `buildArticlePaths`，三个 `[...slug].astro` 统一调用。
+12. **内联事件处理（⚠️ 基本完成）**：卡片链接（P1）、侧边栏菜单（P4）已改事件委托 + `data-section`。保留项：`toggleSidebar`/`closeOverlay` 为原生 `<button>`，键盘原生可访问，内联 onclick 可接受。
+13. **~~可访问性~~（✅ 2026-07-28 已解决）**：侧边栏 `<li>` 加 `role="button" tabindex="0" aria-label` + Enter/Space 键盘委托；友邻空 `alt` P1 已修。
+14. **~~死代码~~（✅ 2026-07-28 已解决）**：删除 `showSmallTalk()` 空函数及其调用；填充 `.profile-name`/`.profile-bio`；页脚 `© 2026` 改为动态 `{new Date().getFullYear()}`。
+15. **~~package.json name 为空~~（✅ 2026-07-28 已修为 `my_blog`）**
 
 ### P5 — 依赖与环境
 
-16. `astro` 7.0.7 → 7.1.4 可升级（`npm outdated`）。
-17. `node_modules` 存在 extraneous 包（`@emnapi/*`、`@napi-rs/wasm-runtime`、`tslib`）→ `npm prune` 清理，确认 lock 文件一致。
+16. **~~astro 7.0.7 → 7.1.4~~（✅ 2026-07-28 已升级）**：构建通过。
+17. **npm prune（✅ 2026-07-28 已执行）**：`npm ls` 仍报 6 个 extraneous（`@emnapi/*`、`@napi-rs/*`、`tslib` 等），实为 sharp 的可选原生传递依赖、被实际加载使用，**非冗余**，不应删除；待 sharp 上游修复后自然消失。
 
 ## 三、执行顺序建议
 
@@ -76,7 +76,7 @@
 第 1 批（正确性）：P0-1 remark-gfm、P0-2 日期格式、P0-3 去重图片 ✅ 已完成
 第 2 批（性能）：  P1-4 图片压缩 ✅、P1-5 CSS 去重 ⚠️（sidebar 块遗留）、P1-6 真实链接 ✅
 第 3 批（工程化）：P2-7 set:html 转义 ✅、P3-9/10 SEO 基础 ✅（RSS 待定）
-第 4 批（收尾）：  P5 依赖升级、文档更新、提交
+第 4 批（收尾）：  P4 组件抽取/可访问性/死代码 ✅、P5 astro 升级与 npm prune ✅
 ```
 
 每批完成后：更新本文件与 `build/changelog.md` → `npm run build` 验证 → 提交。

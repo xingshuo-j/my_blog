@@ -2,6 +2,7 @@
 import "../../style/base.css";
 
 const { title = "xing's blog", description = "xing 的个人博客：学习杂记、闲鱼生存日记、杂言小计与每日碎碎念。" } = Astro.props;
+const year = new Date().getFullYear();
 const imageModules = import.meta.glob('../image/*.{png,jpg,jpeg,webp,gif,svg}', { eager: true });
 const imageUrls = Object.values(imageModules).map(m => { const img = m.default; return typeof img === 'string' ? img : img.src; });
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -36,8 +37,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
                     <div class="sidebar-profile">
                         <img src="/favicon.ico" alt="avatar" class="profile-avatar-img">
                         <div class="profile-info">
-                            <h4 class="profile-name"></h4>
-                            <p class="profile-bio"></p>
+                            <h4 class="profile-name">xing</h4>
+                            <p class="profile-bio">代码 · 生活 · 杂记</p>
                         </div>
                     </div>
                 </div>
@@ -45,22 +46,22 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
                 <!-- 菜单列表 -->
                 <div class="sidebar-body">
                     <ul class="sidebar-menu">
-                        <li class="sidebar-menu-item active" onclick="switchSection('small_talk')">
+                        <li class="sidebar-menu-item active" data-section="small_talk" tabindex="0" role="button" aria-label="xing的碎碎念">
                             <span class="sidebar-menu-text">xing的碎碎念</span>
                         </li>
-                        <li class="sidebar-menu-item" onclick="switchSection('learn')">
+                        <li class="sidebar-menu-item" data-section="learn" tabindex="0" role="button" aria-label="学习杂记">
                             <span class="sidebar-menu-text">学习杂记</span>
                         </li>
-                        <li class="sidebar-menu-item" onclick="switchSection('life')">
+                        <li class="sidebar-menu-item" data-section="life" tabindex="0" role="button" aria-label="闲鱼生存日记">
                             <span class="sidebar-menu-text">闲鱼生存日记</span>
                         </li>
-                        <li class="sidebar-menu-item" onclick="switchSection('oth')">
+                        <li class="sidebar-menu-item" data-section="oth" tabindex="0" role="button" aria-label="杂言小计">
                             <span class="sidebar-menu-text">杂言小计</span>
                         </li>
-                        <li class="sidebar-menu-item" onclick="switchSection('daily')">
+                        <li class="sidebar-menu-item" data-section="daily" tabindex="0" role="button" aria-label="每日一图">
                             <span class="sidebar-menu-text">每日一图</span>
                         </li>
-                        <li class="sidebar-menu-item" onclick="switchSection('friends')">
+                        <li class="sidebar-menu-item" data-section="friends" tabindex="0" role="button" aria-label="友邻">
                             <span class="sidebar-menu-text">友邻</span>
                         </li>
                     </ul>
@@ -85,7 +86,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
             <footer class="footer">
                 <div class="container">
                     <div class="footer-content">
-                        <span>&copy; 2026 xing's blog</span>
+                        <span>&copy; {year} xing's blog</span>
                     </div>
                 </div>
             </footer>
@@ -132,7 +133,6 @@ window.switchSection = function(name) {
   var s = document.getElementById('section-' + name);
   if (s) s.style.display = 'block';
   if (name === 'daily') window.showDailyImage();
-            if (name === 'small_talk') window.showSmallTalk();
 };
 
 window.showDailyImage = function() {
@@ -165,9 +165,22 @@ window.closeOverlay = function() {
   document.body.style.overflow = '';
 };
 
-window.showSmallTalk = function() {
-  // 内容由 index.astro 预渲染，无需额外操作
-};
+// 侧边栏菜单：事件委托（click + 键盘 Enter/Space）实现无障碍切换
+// 菜单项为 role="button" + tabindex="0"，可用键盘聚焦与激活
+for (var mi = 0; mi < allItems.length; mi++) {
+  (function(item){
+    item.addEventListener('click', function(){
+      var name = item.getAttribute('data-section');
+      if (name) window.switchSection(name);
+    });
+    item.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        item.click();
+      }
+    });
+  })(allItems[mi]);
+}
 
 // 文章卡片：真实链接 + 点击拦截实现覆层阅读（渐进增强）
 // 无 JS 时走正常跳转；中键/ctrl+click 可新标签打开

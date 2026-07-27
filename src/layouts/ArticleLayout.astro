@@ -1,6 +1,7 @@
 ---
 import "../../style/base.css";
 const { frontmatter } = Astro.props;
+const year = new Date().getFullYear();
 const articleTitle = frontmatter?.title || "文章";
 const description = frontmatter?.excerpt || "xing's blog 文章";
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -39,7 +40,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
             <footer class="footer">
                 <div class="container">
                     <div class="footer-content">
-                        <span>&copy; 2026 xing's blog</span>
+                        <span>&copy; {year} xing's blog</span>
                     </div>
                 </div>
             </footer>

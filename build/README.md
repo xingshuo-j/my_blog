@@ -33,9 +33,9 @@
 | 第 1 批 P0 正确性 | ✅ 完成（日期修复、GFM 删除线、重复图片） |
 | 第 2 批 P1 性能 | ⚠️ 基本完成（图片压缩✅、真实链接✅、CSS 去重剩 sidebar 块遗留 P1-5b） |
 | 第 3 批 P2/P3 工程化 | ✅ 完成（set:html 转义、site 配置、sitemap、meta description/OG、canonical、robots.txt、404 页）⚠️ 占位域名待替换 |
-| 第 4 批 P4/P5 收尾 | ⬜ 待做：组件抽取 ArticleCard、侧边栏键盘可访问性、死代码清理、astro 升级 7.1.4、npm prune |
+| 第 4 批 P4/P5 收尾 | ✅ 完成（ArticleCard 组件抽取、侧边栏 ARIA 可访问性、死代码清理、astro 7.0.7→7.1.4、npm prune） |
 
-**下一件事**：第 4 批 P4/P5（可维护性 + 依赖），详见 `optimization_plan.md` 第 11~17 项。部署前务必把 `https://YOUR-DOMAIN.example` 改成真实域名。
+**全部 P0~P5 通体完成**。剩余低优先级：P1-5b（sidebar 新旧 CSS 块人工合并 + 视觉回归）、RSS（`@astrojs/rss`）、部署占位域名替换。部署前务必把 `https://YOUR-DOMAIN.example` 改成真实域名。
 
 ## 项目速览
 

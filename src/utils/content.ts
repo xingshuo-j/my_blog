@@ -27,3 +27,17 @@ export function sortByDateDesc<T extends { frontmatter?: { date?: unknown } }>(
     (a, b) => parseDate(b.frontmatter?.date) - parseDate(a.frontmatter?.date)
   );
 }
+
+/**
+ * Markdown 动态路由 getStaticPaths 构造器。
+ * 传入 import.meta.glob 的结果，返回 { params: { slug }, props: { entry } }[]。
+ * 供 learn / life / oth 的 [...slug].astro 复用，消除重复。
+ */
+export function buildArticlePaths<
+  T extends { frontmatter?: { slug?: string } }
+>(glob: Record<string, T>) {
+  return Object.entries(glob).map(([, module]) => ({
+    params: { slug: module.frontmatter?.slug },
+    props: { entry: module },
+  }));
+}

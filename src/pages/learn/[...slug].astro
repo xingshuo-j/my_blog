@@ -1,11 +1,9 @@
 ---
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { buildArticlePaths } from "../../utils/content";
 
 export async function getStaticPaths() {
-  const entries = import.meta.glob('../../learn/*.md', { eager: true });
-  return Object.entries(entries).map(function([_, module]) {
-    return { params: { slug: module.frontmatter.slug }, props: { entry: module } };
-  });
+  return buildArticlePaths(import.meta.glob('../../learn/*.md', { eager: true }));
 }
 
 const { entry } = Astro.props;

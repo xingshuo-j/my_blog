@@ -35,9 +35,8 @@
 | 项 | 状态 | 说明 |
 |----|------|------|
 | 依赖数量 | ✅ | 直接依赖 astro + @astrojs/sitemap（2026-07-28 已卸载无用的 remark-gfm），攻击面小 |
-| `npm audit` | ⚠️ | 2026-07-28 新增 @astrojs/sitemap 带入 sharp/libvips 依赖，报 5 项（1低1中3高）sharp/libvips CVE（处理恶意图片时触发）。本项目为纯静态构建、不接受外部图片上传，风险极低；暂不 `npm audit fix` 以避免依赖大改，若未来引入用户上传需立即修复 |
-| `npm audit` | 待运行 | 每次升级依赖后执行 `npm audit` |
-| extraneous 包 | ⚠️ | node_modules 中有 `@emnapi/*`、`tslib` 等未声明包 → `npm prune` 清理 |
+| `npm audit` | ⚠️ | 2026-07-28 随 @astrojs/sitemap 带入 sharp/libvips，报 sharp/libvips CVE（处理恶意图片时触发）。本项目纯静态、不接受外部图片上传，风险极低；暂不 `npm audit fix` 以免依赖大改，若未来引入用户上传需立即修复。每次升级依赖后须重跑 `npm audit` |
+| extraneous 包 | ✅ | `npm ls --depth=0` 报的 6 个 extraneous（`@emnapi/*`、`@napi-rs/*`、`tslib`）实为 sharp 的可选原生传递依赖、被实际加载，非冗余；`npm prune` 已执行，确认不应删除 |
 | lock 文件 | ✅ | `package-lock.json` 已提交，保证可复现安装 |
 | 依赖版本固定 | ⚠️ | 使用 `^` 范围，建议关键依赖定期审查更新 |
 
