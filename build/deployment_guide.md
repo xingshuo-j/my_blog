@@ -61,9 +61,10 @@ server {
   - 代码中读取：`import.meta.env.PUBLIC_ANALYTICS_ID`
   - **切勿**将密钥放入 `PUBLIC_` 变量（会打进客户端产物）
 
-## 4. 站点配置（待补）
+## 4. 站点配置
 
-- [ ] `astro.config.mjs` 增加 `site: 'https://your-domain.com'`（sitemap/canonical 前提）
+- [x] ✅ `astro.config.mjs` 已配置 `site` + `@astrojs/sitemap`（2026-07-28），自动生成 `sitemap-index.xml`、`robots.txt`、canonical 与 OG 绝对 URL
+- [ ] ⚠️ **部署前必做**：将 `astro.config.mjs` 和 `public/robots.txt` 中的 `https://YOUR-DOMAIN.example` 替换为真实域名，否则 sitemap/canonical 会指向错误地址
 - [ ] 部署后验证 HTTPS 与 HSTS
 - [ ] 友邻外链 `http://` → `https://`（目标站支持时）
 

@@ -46,18 +46,16 @@
 
 ### P2 — 安全
 
-7. **`set:html` 注入 JSON**
-   - 现状：`<script set:html={JSON.stringify(imageUrls)}>`，若文件名含 `</script>` 可逃逸。
-   - 方案：序列化时将 `<` 替换为 `\u003c`（风险低，纵深防御）。
-   - 详见 `security_audit.md`。
+7. **~~`set:html` 注入 JSON~~（✅ 2026-07-28 已解决）**
+   - 已执行：`set:html={JSON.stringify(imageUrls).replace(/</g, '\\u003c')}`，文件名含 `</script>` 时不再逃逸。详见 `security_audit.md`。
 
 8. **无 CSP / 安全响应头**
    - 方案：静态托管平台（Nginx/Cloudflare 等）配置 CSP、`X-Content-Type-Options`、`Referrer-Policy` 等。
 
 ### P3 — SEO / 可发现性
 
-9. `astro.config.mjs` 缺少 `site` 配置 → 无法生成规范链接与 sitemap。
-10. 缺少：`<meta name="description">`、Open Graph 标签、`robots.txt`、sitemap（`@astrojs/sitemap`）、404 页面、RSS。
+9. ~~`astro.config.mjs` 缺少 `site` 配置~~（✅ 2026-07-28 已添加，当前为占位 `https://YOUR-DOMAIN.example`，部署前须替换为真实域名）
+10. SEO 基础设施（✅ 2026-07-28）：已添加 `<meta name="description">`（首页默认文案、文章页取自 `excerpt`）、Open Graph/Twitter Card、canonical、`robots.txt`、`@astrojs/sitemap`、`404.astro`。**未做**：RSS（低优先级，可后续用 `@astrojs/rss`）。
 
 ### P4 — 可维护性
 
@@ -77,7 +75,7 @@
 ```
 第 1 批（正确性）：P0-1 remark-gfm、P0-2 日期格式、P0-3 去重图片 ✅ 已完成
 第 2 批（性能）：  P1-4 图片压缩 ✅、P1-5 CSS 去重 ⚠️（sidebar 块遗留）、P1-6 真实链接 ✅
-第 3 批（工程化）：P2-7 set:html 转义、P3-9/10 SEO 基础、P4 组件抽取
+第 3 批（工程化）：P2-7 set:html 转义 ✅、P3-9/10 SEO 基础 ✅（RSS 待定）
 第 4 批（收尾）：  P5 依赖升级、文档更新、提交
 ```
 

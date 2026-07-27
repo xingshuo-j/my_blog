@@ -2,6 +2,29 @@
 
 > 记录每次优化的变更内容。最新记录在最上方。
 
+## 2026-07-28 — P2/P3 批次：安全加固与 SEO 基础
+
+**类型**：安全 + SEO（P2/P3）
+
+**变更内容**：
+1. **set:html 转义（安全）**：`MainLayout.astro` 的图片 URL JSON 注入改为 `JSON.stringify(...).replace(/</g, '\u003c')`，消除 `</script>` 逃逸风险
+2. **SEO 基础设施**：
+   - `astro.config.mjs` 增加 `site` 配置（当前占位 `https://YOUR-DOMAIN.example`，**部署前须替换为真实域名**）
+   - 安装并接入 `@astrojs/sitemap`，构建生成 `sitemap-index.xml` / `sitemap-0.xml`
+   - `public/robots.txt` 增加并声明 sitemap
+   - `MainLayout`/`ArticleLayout` 增加 `<meta name="description">`、canonical、Open Graph、Twitter Card（文章页 description 自动取自 frontmatter `excerpt`）
+   - 新增 `src/pages/404.astro` 友好 404 页
+
+**构建验证**：`npm run build` 通过（5 页面 + sitemap）；preview 抽查 404/robots/sitemap 均 200；文章页 description 取自 excerpt 正确
+
+**遗状**：
+- `npm audit` 报 sharp/libvips 5 项 CVE（随 sitemap 进入的图片处理转依赖；静态站不接受外部图片，风险极低，已记入 `security_audit.md`）
+- RSS 未做（低优先级，后续可用 `@astrojs/rss`）
+
+**下一步**：P4/P5 批次（组件抽取 ArticleCard、侧边栏键盘可访问性、死代码清理、astro 升级 7.1.4、npm prune）
+
+---
+
 ## 2026-07-28 — P1 批次：性能优化
 
 **类型**：性能（P1）

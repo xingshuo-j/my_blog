@@ -1,9 +1,10 @@
 ---
 import "../../style/base.css";
 
-const { title = "xing's blog" } = Astro.props;
+const { title = "xing's blog", description = "xing 的个人博客：学习杂记、闲鱼生存日记、杂言小计与每日碎碎念。" } = Astro.props;
 const imageModules = import.meta.glob('../image/*.{png,jpg,jpeg,webp,gif,svg}', { eager: true });
 const imageUrls = Object.values(imageModules).map(m => { const img = m.default; return typeof img === 'string' ? img : img.src; });
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 ---
 
 <html lang="zh-CN">
@@ -13,6 +14,13 @@ const imageUrls = Object.values(imageModules).map(m => { const img = m.default; 
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
         <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:card" content="summary" />
     </head>
     <body>
         <div id="highlight-gradient"></div>
@@ -96,7 +104,7 @@ const imageUrls = Object.values(imageModules).map(m => { const img = m.default; 
             </div>
         </div>
 
-        <script id="image-data" type="application/json" set:html={JSON.stringify(imageUrls)}></script>
+        <script id="image-data" type="application/json" set:html={JSON.stringify(imageUrls).replace(/</g, '\\u003c')}></script>
 
         <script>
 (function() {

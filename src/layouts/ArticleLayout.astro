@@ -1,6 +1,9 @@
 ---
 import "../../style/base.css";
 const { frontmatter } = Astro.props;
+const articleTitle = frontmatter?.title || "文章";
+const description = frontmatter?.excerpt || "xing's blog 文章";
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 ---
 
 <html lang="zh-CN">
@@ -9,7 +12,15 @@ const { frontmatter } = Astro.props;
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
-        <title>{frontmatter?.title || "文章"} | xing's blog</title>
+        <title>{articleTitle} | xing's blog</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={articleTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:card" content="summary" />
+        <meta property="article:section" content={frontmatter?.category || ""} />
     </head>
     <body>
         <div id="highlight-gradient"></div>

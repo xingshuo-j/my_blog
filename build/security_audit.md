@@ -8,7 +8,7 @@
 
 | 项 | 状态 | 说明 |
 |----|------|------|
-| `set:html` 注入图片 URL JSON | ⚠️ | `MainLayout.astro` 中 `<script set:html={JSON.stringify(imageUrls)}>`。URL 由构建期生成风险低，但若文件名含 `</script>` 可逃逸。加固：序列化时将 `<` → `\u003c` |
+| `set:html` 注入图片 URL JSON | ✅ | 已加固（2026-07-28）：`JSON.stringify(...).replace(/</g, '\\u003c')`，文件名含 `</script>` 亦无法逃逸 |
 | 客户端 `innerHTML.replace` 渲染 `~~del~~` | ✅ | 已删除（2026-07-28）：Astro 7 Satteri 处理器构建期原生渲染 GFM 删除线，该 innerHTML 写入点已消除 |
 | 文章覆层 `ct.innerHTML = a.innerHTML` | ⚠️ | fetch 同源静态页面再注入，低风险。保持仅同源路径 |
 | Astro 模板默认转义 | ✅ | `{entry.frontmatter.title}` 等表达式输出自动转义 |
@@ -34,7 +34,8 @@
 
 | 项 | 状态 | 说明 |
 |----|------|------|
-| 依赖数量 | ✅ | 仅 1 个直接依赖（astro；2026-07-28 已卸载无用的 remark-gfm），攻击面小 |
+| 依赖数量 | ✅ | 直接依赖 astro + @astrojs/sitemap（2026-07-28 已卸载无用的 remark-gfm），攻击面小 |
+| `npm audit` | ⚠️ | 2026-07-28 新增 @astrojs/sitemap 带入 sharp/libvips 依赖，报 5 项（1低1中3高）sharp/libvips CVE（处理恶意图片时触发）。本项目为纯静态构建、不接受外部图片上传，风险极低；暂不 `npm audit fix` 以避免依赖大改，若未来引入用户上传需立即修复 |
 | `npm audit` | 待运行 | 每次升级依赖后执行 `npm audit` |
 | extraneous 包 | ⚠️ | node_modules 中有 `@emnapi/*`、`tslib` 等未声明包 → `npm prune` 清理 |
 | lock 文件 | ✅ | `package-lock.json` 已提交，保证可复现安装 |
