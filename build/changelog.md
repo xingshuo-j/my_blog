@@ -2,6 +2,21 @@
 
 > 记录每次优化的变更内容。最新记录在最上方。
 
+## 2026-07-28 — learn 文章还原原文内容
+
+**类型**：内容修正（content）
+
+**变更内容**：`src/learn/` 下两篇文章（`debain_fix.md`、`KVM_readme.md`）此前在录入时对原文正文做了改动（删段、删 GRUB 输出、去掉 `~~删除线~~`、改写措辞）。本次以 `~/Desktop/my_blog_files/` 内原文为准，**不修改原文正文一字**，仅补齐博客 frontmatter（title/category/date/slug/excerpt）使其符合博客格式后写回 `src/learn/`。
+
+- `debain_fix.md`：恢复“damm…orz”吐槽段、对 AI 的提醒、GRUB `update-grub` 完整输出代码块、“桌面活了但锁屏还是die”留坑段
+- `KVM_readme.md`：恢复 `~~提醒自己的~~` 删除线（GFM 渲染为 `<del>`）
+
+**构建验证**：`npm run build` 通过（5 页面 + sitemap）；抽检 `dist/learn/` 两页，`damm`/`留个坑`/GRUB 输出/`<del>提醒自己的</del>` 均正确渲染。
+
+**下一步**：无待办（本次为内容还原，不影响优化计划进度）。
+
+---
+
 ## 2026-07-28 — 绑定正式域名
 
 **类型**：部署配置
