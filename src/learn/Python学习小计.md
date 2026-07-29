@@ -1,7 +1,8 @@
 ---
 title: Python学习小计
-categroy: 学习日记
-date: "2026-7-28"
+category: 学习日记
+date: "2026-07-28"
+slug: python-learn-notes
 excerpt: 记一下目前用过的但是老忘记的函数
 ---
 # Python学习小计
