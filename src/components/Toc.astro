@@ -1,0 +1,47 @@
+---
+/*
+ * Hallmark · component: TOC (table of contents) · theme: Atelier (system reuse)
+ * states: link-default · link-hover · link-focus · link-active(observed)
+ * scope: only ArticleLayout article pages (learn/life/oth .md detail pages).
+ * small_talk never enters ArticleLayout, so it is provably excluded.
+ *
+ * Props:
+ *   headings — MarkdownHeading[] from entry.getHeadings() (Astro 7 MarkdownInstance)
+ *
+ * Renders only H2+H3 items. If < 2 headings (no meaningful structure), renders nothing.
+ * Desktop (≥1024px): sticky sidebar right of article body.
+ * Mobile (<1024px): inline block collapsed below navbar, expandable via "目录" toggle.
+ */
+import type { MarkdownHeading } from "@astrojs/internal-helpers/markdown";
+
+const { headings = [] } = Astro.props as { headings: MarkdownHeading[] };
+
+// 仅保留 H2 / H3
+const tocItems = headings.filter(
+  (h: MarkdownHeading) => h.depth === 2 || h.depth === 3
+);
+
+// 少于 2 个标题 → 不渲染（避免空白区域）
+const show = tocItems.length >= 2;
+---
+
+{show && (
+  <aside class="toc-wrapper" id="toc-wrapper">
+    <button class="toc-toggle" id="toc-toggle" type="button"
+      aria-label="切换目录" aria-expanded="false" aria-controls="toc-list">
+      <span>目录</span>
+      <svg class="toc-toggle-chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+        <path d="M3 4.5 L6 7.5 L9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <nav class="toc-nav" id="toc-nav">
+      <ul class="toc-list" id="toc-list">
+        {tocItems.map((item: MarkdownHeading) => (
+          <li class={`toc-item toc-depth-${item.depth}`}>
+            <a href={`#${item.slug}`} class="toc-link">{item.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </aside>
+)}

@@ -8,8 +8,9 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { frontmatter } = entry;
+const headings = entry.getHeadings ? entry.getHeadings() : [];
 ---
 
-<ArticleLayout frontmatter={frontmatter}>
+<ArticleLayout frontmatter={frontmatter} headings={headings}>
   <entry.Content />
 </ArticleLayout>

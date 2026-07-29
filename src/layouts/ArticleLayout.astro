@@ -1,6 +1,7 @@
 ---
 import "../../style/base.css";
-const { frontmatter } = Astro.props;
+import Toc from "../components/Toc.astro";
+const { frontmatter, headings = [] } = Astro.props;
 const year = new Date().getFullYear();
 const articleTitle = frontmatter?.title || "文章";
 const description = frontmatter?.excerpt || "xing's blog 文章";
@@ -62,6 +63,7 @@ const othNavClass = isOthArticle ? "active" : "";
                 <article class="article-content card-style">
                     <slot />
                 </article>
+                <Toc headings={headings} />
             </div>
 
             <footer class="footer">
@@ -117,6 +119,60 @@ const othNavClass = isOthArticle ? "active" : "";
                         if (e.key === 'Escape') setOpen(false);
                     });
                 }
+
+                // ---- 标题导航（TOC）移动端折叠 ----
+                var tocToggle = document.getElementById('toc-toggle');
+                var tocWrapper = document.getElementById('toc-wrapper');
+                if (tocToggle && tocWrapper) {
+                    tocToggle.addEventListener('click', function () {
+                        var open = !tocWrapper.classList.contains('toc-open');
+                        tocWrapper.classList.toggle('toc-open', open);
+                        tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    });
+                    // 点击目录链接后自动收起（仅移动端）
+                    document.getElementById('toc-list').addEventListener('click', function (e) {
+                        if (window.innerWidth < 1024) {
+                            tocWrapper.classList.remove('toc-open');
+                            tocToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+
+                // ---- TOC 滚动监听高亮 ----
+                (function () {
+                    var tocLinks = document.querySelectorAll('.toc-link');
+                    if (!tocLinks.length) return;
+                    var headingIds = [];
+                    for (var i = 0; i < tocLinks.length; i++) {
+                        var href = tocLinks[i].getAttribute('href');
+                        if (href && href.charAt(0) === '#') {
+                            headingIds.push({ el: document.getElementById(href.slice(1)), link: tocLinks[i] });
+                        }
+                    }
+                    // 过滤掉找不到目标元素的项
+                    headingIds = headingIds.filter(function (item) { return item.el; });
+                    if (!headingIds.length) return;
+
+                    function setActive(id) {
+                        for (var i = 0; i < tocLinks.length; i++) tocLinks[i].classList.remove('active');
+                        if (id) id.classList.add('active');
+                    }
+
+                    var observer = new IntersectionObserver(function (entries) {
+                        // 取第一个进入视口的 heading（靠近顶部）
+                        for (var i = 0; i < entries.length; i++) {
+                            if (entries[i].isIntersecting) {
+                                setActive(entries[i].target._tocLink || null);
+                                return;
+                            }
+                        }
+                    }, { rootMargin: '-80px 0px -70% 0px' });
+
+                    for (var i = 0; i < headingIds.length; i++) {
+                        headingIds[i].el._tocLink = headingIds[i].link;
+                        observer.observe(headingIds[i].el);
+                    }
+                })();
             })();
         </script>
     </body>
