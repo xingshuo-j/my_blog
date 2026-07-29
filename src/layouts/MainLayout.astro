@@ -158,10 +158,21 @@ window.openArticle = function(url) {
   document.body.style.overflow = 'hidden';
   ct.innerHTML = '<div class=overlay-loading>加载中...</div>';
   fetch(url).then(function(r){return r.text();}).then(function(h){
-    var a = new DOMParser().parseFromString(h,'text/html').querySelector('.article-content');
-    if (a) { ct.innerHTML = a.innerHTML; } else { window.location.href = url; }
-    // 为覆层中动态注入的代码块绑定复制按钮（small_talk 不走覆层，不受影响）
+    var doc = new DOMParser().parseFromString(h,'text/html');
+    // 提取 .article-page-wrapper（含 article 正文 + TOC 标题导航）
+    var wrapper = doc.querySelector('.article-page-wrapper');
+    if (wrapper) {
+      ct.innerHTML = wrapper.outerHTML;
+      ct.className = 'overlay-article-body';
+    } else {
+      var a = doc.querySelector('.article-content');
+      if (a) { ct.innerHTML = a.innerHTML; } else { window.location.href = url; }
+    }
+    // 为覆层中动态注入的代码块绑定复制按钮
     if (window.__setupCodeCopy) window.__setupCodeCopy(ct);
+    // 为覆层中动态注入的 TOC 绑定折叠交互和滚动高亮观察器
+    if (window.__initTocToggle) window.__initTocToggle(ct);
+    if (window.__initTocObserver) window.__initTocObserver(ct);
     ov.scrollTop = 0;
   }).catch(function(){ window.location.href = url; });
 };

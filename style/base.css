@@ -1305,3 +1305,40 @@ h1, h2, h3, h4 {
   .toc-link { font-size: var(--text-xs); padding-left: var(--space-2); padding-right: var(--space-2); }
   .toc-depth-3 .toc-link { padding-left: var(--space-5); }
 }
+
+/* ---------- overlay TOC: when .toc-wrapper is injected into overlay,
+   strip the card styling from .article-content (provided by .overlay-article-body) ---------- */
+.overlay-article-body .article-content.card-style {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  max-width: none;
+}
+/* overlay TOC: use the same flex row layout as article pages */
+.overlay-article-body .article-page-wrapper {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+}
+/* overlay: TOC should stick within overlay scroll area */
+.overlay-article-body .toc-wrapper {
+  top: 0;
+}
+/* overlay mobile: collapse TOC like article pages */
+@media (max-width: 1023px) {
+  .overlay-article-body .article-page-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .overlay-article-body .toc-wrapper {
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow-y: visible;
+    margin-left: 0;
+    border-left: none;
+    border-bottom: 1px solid var(--color-line);
+    margin-bottom: var(--space-4);
+  }
+}
