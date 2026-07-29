@@ -5,6 +5,15 @@ const year = new Date().getFullYear();
 const articleTitle = frontmatter?.title || "文章";
 const description = frontmatter?.excerpt || "xing's blog 文章";
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+// 当前页面对应的导航菜单高亮：按路径前缀匹配分区
+const pathName = Astro.url.pathname;
+const isLearnArticle = pathName.startsWith("/learn/");
+const isLifeArticle = pathName.startsWith("/life/");
+const isOthArticle = pathName.startsWith("/oth/");
+const homeNavClass = (isLearnArticle || isLifeArticle || isOthArticle) ? "" : "active";
+const learnNavClass = isLearnArticle ? "active" : "";
+const lifeNavClass = isLifeArticle ? "active" : "";
+const othNavClass = isOthArticle ? "active" : "";
 ---
 
 <html lang="zh-CN">
@@ -16,6 +25,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" />
+        <script src="/js/code-copy.js" defer></script>
         <title>{articleTitle} | xing's blog</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
@@ -31,7 +41,21 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
         <div class="layout-wrapper full">
             <nav class="navbar" id="navbar">
                 <a href="/" class="nav-logo">xing's blog</a>
-                <a href="/learn/" class="overlay-close-btn">&#x2190; 返回</a>
+                <div class="nav-right">
+                    <ul class="nav-menu" id="nav-menu">
+                        <li><a href="/" class={`nav-link ${homeNavClass}`}>首页</a></li>
+                        <li><a href="/learn/" class={`nav-link ${learnNavClass}`}>学习杂记</a></li>
+                        <li><a href="/life/" class={`nav-link ${lifeNavClass}`}>闲鱼生存日记</a></li>
+                        <li><a href="/oth/" class={`nav-link ${othNavClass}`}>杂言小计</a></li>
+                    </ul>
+                    <a href="/" class="overlay-close-btn nav-back">&#x2190; 返回</a>
+                    <button class="nav-toggle" id="nav-toggle" type="button"
+                        aria-label="切换导航菜单" aria-expanded="false" aria-controls="nav-menu">
+                        <span class="nav-toggle-bar"></span>
+                        <span class="nav-toggle-bar"></span>
+                        <span class="nav-toggle-bar"></span>
+                    </button>
+                </div>
             </nav>
 
             <div class="article-page-wrapper">
@@ -62,6 +86,37 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
                 }
                 window.addEventListener('scroll', onScroll, { passive: true });
                 onScroll();
+
+                // 移动端汉堡菜单：展开 / 收起 + 键盘可访问 + 外部点击 / Esc 关闭
+                var toggle = document.getElementById('nav-toggle');
+                var menu = document.getElementById('nav-menu');
+                if (toggle && menu) {
+                    function setOpen(open) {
+                        navbar.classList.toggle('nav-open', open);
+                        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    }
+                    toggle.addEventListener('click', function () {
+                        setOpen(!navbar.classList.contains('nav-open'));
+                    });
+                    toggle.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                            e.preventDefault();
+                            setOpen(!navbar.classList.contains('nav-open'));
+                        }
+                    });
+                    // 点击菜单项后自动收起
+                    menu.addEventListener('click', function (e) {
+                        if (e.target && e.target.closest && e.target.closest('a.nav-link')) setOpen(false);
+                    });
+                    // 外部点击 / Esc 关闭
+                    document.addEventListener('click', function (e) {
+                        if (!navbar.classList.contains('nav-open')) return;
+                        if (!navbar.contains(e.target)) setOpen(false);
+                    });
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape') setOpen(false);
+                    });
+                }
             })();
         </script>
     </body>

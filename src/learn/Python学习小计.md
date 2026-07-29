@@ -405,7 +405,7 @@ print(my_var) # NameError: name 'my_var' is not defined
 ```
 - 封闭作用域 (E)：定义在封闭或嵌套函数中的变量。
 > 嵌套在另一个函数内部的函数可以访问它所嵌套的函数的变量
-```python3
+```python
 def outer_func():
     msg = 'Hello there!'
 

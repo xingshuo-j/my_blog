@@ -1,0 +1,22 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
+import { sortByDateDesc } from "../utils/content";
+
+const lifeEntries = sortByDateDesc(Object.values(import.meta.glob('../life/*.md', { eager: true })));
+---
+
+<MainLayout title="闲鱼生存日记 | xing's blog">
+    <div class="category-content">
+        <h2 class="category-title">闲鱼生存日记</h2>
+        {lifeEntries.length === 0 ? (
+            <div class="category-empty"><p>暂无内容，敬请期待</p></div>
+        ) : (
+            <div class="learn-cards-grid">
+                {lifeEntries.map(entry => (
+                    <ArticleCard entry={entry} prefix="/life/" />
+                ))}
+            </div>
+        )}
+    </div>
+</MainLayout>

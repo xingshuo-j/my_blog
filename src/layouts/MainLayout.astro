@@ -17,6 +17,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" />
+        <script src="/js/code-copy.js" defer></script>
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
@@ -159,6 +160,8 @@ window.openArticle = function(url) {
   fetch(url).then(function(r){return r.text();}).then(function(h){
     var a = new DOMParser().parseFromString(h,'text/html').querySelector('.article-content');
     if (a) { ct.innerHTML = a.innerHTML; } else { window.location.href = url; }
+    // 为覆层中动态注入的代码块绑定复制按钮（small_talk 不走覆层，不受影响）
+    if (window.__setupCodeCopy) window.__setupCodeCopy(ct);
     ov.scrollTop = 0;
   }).catch(function(){ window.location.href = url; });
 };

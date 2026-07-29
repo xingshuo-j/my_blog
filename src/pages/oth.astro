@@ -1,0 +1,22 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
+import { sortByDateDesc } from "../utils/content";
+
+const othEntries = sortByDateDesc(Object.values(import.meta.glob('../oth/*.md', { eager: true })));
+---
+
+<MainLayout title="杂言小计 | xing's blog">
+    <div class="category-content">
+        <h2 class="category-title">杂言小计</h2>
+        {othEntries.length === 0 ? (
+            <div class="category-empty"><p>暂无内容，敬请期待</p></div>
+        ) : (
+            <div class="learn-cards-grid">
+                {othEntries.map(entry => (
+                    <ArticleCard entry={entry} prefix="/oth/" />
+                ))}
+            </div>
+        )}
+    </div>
+</MainLayout>
