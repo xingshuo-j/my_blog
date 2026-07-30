@@ -674,6 +674,16 @@ my_str = 'hello world'
 title_case_my_str = my_str.title()
 print(title_case_my_str)  # Hello World
 ```
+- translate():根据maketrans生成的映射表转换字符，使用方法：str_to_trans.translate(table)
+```python
+text = "hello abc world"
+
+# 生成映射表：将 a->1, b->2, c->3
+table = str.maketrans("abc", "123")
+
+result = text.translate(table)
+print(result)  # 输出: hello 123 world
+```
 - type:返回字符类型
 ```python
 a=3
