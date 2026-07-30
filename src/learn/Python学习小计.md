@@ -593,6 +593,13 @@ lowercase_my_str = my_str.lower()
 print(lowercase_my_str)  # hello world
 ```
 ### M
+- maketrans(str1,str2):接受两个等长度的字符串，并将字符串按一一对应的顺序构建映射表,使用str.maketrans()调用
+```python
+str1="abc"
+str2="xyz"
+table=str.maketrans(str1,str2)
+print(table)      #{97: 120, 98: 121, 99: 122}
+```
 ### N
 ### O
 ### P
