@@ -1649,6 +1649,311 @@ if __name__ == '__main__':
 ```
 这里的 `__name__` 是 Python 的一个特殊内置变量。当脚本被直接执行时，它的值是 `"__main__"`；如果这个脚本被当作模块导入到别的文件中，`__name__` 就会是模块名。利用这个特性，我们可以让脚本既能单独运行，也能被其他代码导入而不执行主逻辑。
 
+### python中的报错信息：
+#### 什么是报错：
+写代码不可能一帆风顺，报错是程序给我们的"诊断报告"。当 Python 解释器发现代码有问题时，会抛出一个异常（Exception），中断当前代码的执行，并打印一段回溯信息（Traceback），告诉我们错误类型和出错位置。
+
+```python
+print(undefined_var)  # 使用了未定义的变量
+```
+```
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'undefined_var' is not defined
+```
+
+看报错信息有个小技巧：**从最后一行开始看**。最后一行告诉你"错在哪"——报错类型和具体原因，上面的行告诉你"在哪错"——哪个文件哪一行。上面例子中 `NameError: name 'undefined_var' is not defined` 就是在说：名字 `undefined_var` 没有被定义。
+
+#### 常见的报错类型：
+下面整理了一些常见的报错类型，混个脸熟，以后见到不至于手忙脚乱。之前课程里遇到的 `TypeError`（修改元组）、`IndexError`（索引越界）、`ValueError`（列表 remove 不存在的值）等，都能在这张表里找到：
+
+| 报错类型 | 含义 | 常见触发场景 |
+| :--- | :--- | :--- |
+| SyntaxError | 语法错误 | 拼写错误、括号不匹配等 |
+| IndentationError | 缩进错误 | 该缩进的代码块没有缩进 |
+| NameError | 名称错误 | 使用了未定义的变量或函数 |
+| TypeError | 类型错误 | 对不兼容的类型做操作 |
+| ValueError | 值错误 | 值本身不合法，如 `int('abc')` |
+| IndexError | 索引错误 | 索引超出序列范围 |
+| KeyError | 键错误 | 访问字典中不存在的键 |
+| ZeroDivisionError | 除零错误 | 数字除以 0 |
+| AttributeError | 属性错误 | 对象没有该属性或方法 |
+| ImportError | 导入错误 | 导入不存在的模块 |
+
+注意区分：`SyntaxError` 是解释器还没运行代码就发现的"语法问题"，其他大部分报错则是代码运行到那一行才触发的"运行时错误"。
+
+#### try/except 捕获异常：
+报错会中断程序，那能不能"接住"异常让程序继续跑呢？`try` 和 `except` 就是干这个的。`try` 包裹可能出错的代码，`except` 接住指定类型的异常：
+
+```python
+try:
+    num = int(input('请输入一个数字：'))
+    print(10 / num)
+except ZeroDivisionError:
+    print('除数不能为零')
+```
+如果用户输入 0，程序不会崩掉，而是执行 `except` 里的代码：
+```
+请输入一个数字：0
+除数不能为零
+```
+如果没发生异常，`except` 里的代码不会执行。
+
+#### except 的多种写法：
+`except` 可以同时捕获多种异常类型，用括号包起来：
+```python
+try:
+    num = int('abc')
+except (ValueError, TypeError):
+    print('转换失败')
+```
+也可以给异常起个别名（用 `as`），把具体的报错信息存到变量里看看：
+```python
+try:
+    num = int('abc')
+except ValueError as e:
+    print(e)  # invalid literal for int() with base 10: 'abc'
+```
+
+#### else 和 finally：
+`else` 子句在 try 中的代码没有发生异常时执行：
+```python
+try:
+    num = int('42')
+except ValueError:
+    print('转换失败')
+else:
+    print(f'转换成功，{num * 2}')
+```
+```
+转换成功，84
+```
+`finally` 子句则不管有没有异常都会执行，常用于关闭文件、释放资源这类收尾工作：
+```python
+try:
+    num = int('abc')
+except ValueError:
+    print('转换失败')
+finally:
+    print('这行无论发生什么都会执行')
+```
+```
+转换失败
+这行无论发生什么都会执行
+```
+
+#### raise 主动抛出异常：
+除了被动等报错，你还可以用 `raise` 关键字主动抛出异常，比如在函数里校验参数：
+```python
+def check_positive(num):
+    if num <= 0:
+        raise ValueError('num 必须是正数')
+    return num
+
+check_positive(-5)
+```
+```
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+ValueError: num 必须是正数
+```
+
+### 类和对象：
+#### 什么是类和对象：
+回想一下之前学过的数据类型，`int`、`str`、`list` 其实都是"类"（class），而我们创建的具体数据，比如 `3`、`'hello'`、`[1, 2, 3]`，都是对应类的"对象"（object），也叫实例（instance）：
+```python
+print(type(3))          # <class 'int'>
+print(type('hello'))    # <class 'str'>
+```
+类就像一张"设计图纸"，规定了对象应该有哪些数据（属性）和能做什么事情（方法）；对象则是按图纸造出来的"实物"。一张图纸可以造出无数辆车，一个类也可以创建出无数个互不干扰的对象。
+
+#### 自定义类和实例化：
+使用 `class` 关键字定义类，类名习惯用大驼峰命名法（每个单词首字母都大写），比如 `Dog`、`Student`：
+```python
+class Dog:
+    pass
+```
+`pass` 又见面了，它还是那个占位符，用来占住暂时为空的代码块。
+
+创建对象的过程叫实例化，写法是"类名加括号"，和调用函数差不多：
+```python
+class Dog:
+    pass
+
+my_dog = Dog()
+print(my_dog)            # <__main__.Dog object at 0x...>
+print(type(my_dog))      # <class '__main__.Dog'>
+```
+
+#### 属性和方法：
+光有空壳类没什么用，给它加点东西。类里面的变量叫属性（attribute），类里面的函数叫方法（method）。
+
+注意看下面代码里的 `self`，它代表"对象自己"。类里定义方法时，第一个参数必须是 `self`，但调用方法时不需要手动传它，Python 会自动把对象本身传进去：
+```python
+class Dog:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def bark(self):
+        print(f'{self.name} 汪汪叫')
+
+my_dog = Dog('旺财', 3)
+print(my_dog.name)   # 旺财
+print(my_dog.age)    # 3
+my_dog.bark()        # 旺财 汪汪叫
+```
+`__init__` 是类的构造方法（初始化方法），创建对象时会自动调用，通常用来给属性赋初值。上面例子中 `Dog('旺财', 3)` 传入的两个参数，就是传给 `__init__` 用的。
+
+访问对象的属性和调用方法都用点运算符：
+```python
+my_dog.name
+my_dog.bark()
+```
+每个实例都有自己的一份属性，互不干扰：
+```python
+dog_a = Dog('旺财', 3)
+dog_b = Dog('来福', 2)
+
+dog_a.name = '大黄'   # 直接给属性重新赋值
+print(dog_a.name)     # 大黄
+print(dog_b.name)     # 来福
+```
+如果调用类里没有定义的方法，会报 `AttributeError`：
+```python
+my_dog.swim()
+# AttributeError: 'Dog' object has no attribute 'swim'
+```
+
+#### 类变量和实例变量：
+上面例子里的 `name`、`age` 是实例变量，每个对象各存一份。如果想让所有对象共享一份数据，可以定义类变量——写在类体里、方法外面：
+```python
+class Dog:
+    species = 'Canis familiaris'  # 类变量
+
+    def __init__(self, name):
+        self.name = name
+
+print(Dog.species)   # Canis familiaris
+dog = Dog('旺财')
+print(dog.species)   # Canis familiaris
+print(dog.name)      # 旺财
+```
+类变量既可以通过类名访问，也可以通过对象访问。
+
+### 面向对象编程：
+面向对象编程（Object Oriented Programming，简称 OOP）是一种编程思想，把数据和对数据的操作封装在一起。Python 面向对象有三大特性：封装、继承、多态。
+
+#### 继承：
+继承（inheritance）让一个新类复用已有类的属性和方法。新类叫子类（subclass），被继承的类叫父类（parent class）或基类。写法是在类名后面的括号里写上父类名：
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def eat(self):
+        print(f'{self.name} 在吃东西')
+
+class Dog(Animal):
+    def bark(self):
+        print(f'{self.name} 汪汪叫')
+
+dog = Dog('旺财')
+dog.eat()    # 旺财 在吃东西   # 继承自 Animal
+dog.bark()   # 旺财 汪汪叫     # 自己的方法
+```
+`Dog` 类里没有定义 `eat`，但它继承自 `Animal`，所以可以直接调用。
+
+子类还可以重写（override）父类的方法，覆盖掉父类的实现：
+```python
+class Dog(Animal):
+    def eat(self):
+        print(f'{self.name} 大口干饭')
+
+dog = Dog('旺财')
+dog.eat()   # 旺财 大口干饭
+```
+
+#### super()：
+如果子类重写了 `__init__`，又不想重写一遍父类的初始化逻辑，可以用 `super()` 调用父类的方法：
+```python
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)   # 调用父类的 __init__
+        self.breed = breed
+
+dog = Dog('旺财', '中华田园犬')
+print(dog.name)    # 旺财
+print(dog.breed)   # 中华田园犬
+```
+
+#### 封装：
+封装（encapsulation）把内部细节藏起来，只暴露需要的接口。Python 的约定是：名字前面加一个下划线 `_`，表示"内部使用，别乱动"；加两个下划线 `__` 会把属性"私有化"，外部不能用原名字直接访问：
+```python
+class BankAccount:
+    def __init__(self, balance):
+        self.__balance = balance
+
+    def deposit(self, amount):
+        self.__balance += amount
+
+    def get_balance(self):
+        return self.__balance
+
+account = BankAccount(1000)
+account.deposit(500)
+print(account.get_balance())   # 1500
+# print(account.__balance)     # AttributeError: 'BankAccount' object has no attribute '__balance'
+```
+其实 Python 的"私有"只是把名字改了（`__balance` 变成了 `_BankAccount__balance`），外部用原名访问会找不到，但并没有真正禁止访问。这是一种"约定大于限制"的做法。
+
+#### 多态：
+多态（polymorphism）简单来说就是"同一个方法名，不同对象有不同的实现"。父类定义一个方法，每个子类各自重写，调用时各自执行各自的版本：
+```python
+class Cat(Animal):
+    def speak(self):
+        print(f'{self.name} 喵喵叫')
+
+class Dog(Animal):
+    def speak(self):
+        print(f'{self.name} 汪汪叫')
+
+animals = [Dog('旺财'), Cat('咪咪')]
+for animal in animals:
+    animal.speak()
+```
+```
+旺财 汪汪叫
+咪咪 喵喵叫
+```
+循环里的对象具体是什么类并不重要，只要它们都有 `speak` 方法就能统一调用——这就是多态带来的便利。
+
+#### 魔术方法：
+以双下划线开头和结尾的方法叫魔术方法（magic methods），前面已经见过 `__init__`。这里再介绍两个最常用的：
+
+`__str__` 定义 `print()` 对象时显示的字符串：
+```python
+class Dog:
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f'Dog(name={self.name})'
+
+dog = Dog('旺财')
+print(dog)  # Dog(name=旺财)
+```
+如果没有定义 `__str__`，`print()` 打印出来的就是一串看不懂的内存地址。
+
+`__repr__` 类似，但它是给开发者调试用的，定义了 `repr()` 函数和交互式环境下显示的内容。简单记忆：`__str__` 面向用户，`__repr__` 面向调试。
+
+最后，`isinstance()` 在类和对象中也很好用，可以判断对象是不是某个类（或父类）的实例：
+```python
+dog = Dog('旺财')
+print(isinstance(dog, Dog))     # True
+print(isinstance(dog, Animal))  # True  子类对象也是父类的实例
+```
+
 ### 其他：
 > 方法和函数的区别：1.应用方式不同，函数直接调用或带入参数，方法在操作对象后调用;2.方法更像是对象的行为，函数则偏向于独立的工具
 > python文件以.py结尾，可在终端以python file.py的方式启动
@@ -1686,6 +1991,14 @@ print(all([1, 0, 3]))        # False
 print(all([]))               # True
 print(all([True, True, True]))  # True
 ```
+- and：布尔操作符，前后都为真时才返回 True；若第一个值是假值，直接返回第一个值，不再往后判断。
+```python
+a = True
+b = 1
+print(a and b)  # 1
+print(b and a)  # True
+print(0 and 1)  # 0
+```
 ### B
 - bool():查询元素布尔值，返回 `True` 或 `False`。
 ```python
@@ -1694,12 +2007,28 @@ print(bool(0))      # False
 print(bool('hello'))  # True
 print(bool(''))     # False
 ```
+- break：立即结束当前循环，跳出循环体，后面没执行完的迭代都不再执行。
+```python
+developer_names = ['Jess', 'Naomi', 'Tom']
+
+for developer in developer_names:
+    if developer == 'Naomi':
+        break
+    print(developer)
+# 只输出 Jess
+```
 ### C
 - capitalize()：返回一个新字串，首个字符大写，其余字符小写。
 ```python
 my_str = 'hello world'
 capitalized_my_str = my_str.capitalize()
 print(capitalized_my_str)  # Hello world
+```
+- class：定义类，类名习惯使用大驼峰命名法（每个单词首字母大写）。
+```python
+class Dog:
+    def bark(self):
+        print('汪汪叫')
 ```
 - clear()：清空列表中的所有元素，列表保持存在但变为空列表。
 ```python
@@ -1712,6 +2041,20 @@ print(numbers)  # []
 my_set = {1, 2, 3}
 my_set.clear()
 print(my_set)  # set()
+```
+- continue：跳过当前迭代的剩余代码，直接进入下一次循环。
+```python
+for i in range(5):
+    if i == 2:
+        continue
+    print(i)
+# 0 1 3 4
+```
+- cos(angle)：math 模块中的函数，返回角度的余弦值（弧度制），常配合 radians() 使用。
+```python
+from math import radians, cos
+
+print(cos(radians(40)))  # 0.766044443118978
 ```
 - count(value)：返回该值在序列中出现的次数。对于字符串，统计子字符串出现次数；对于列表和元组，则统计元素出现次数。
 ```python
@@ -1766,6 +2109,18 @@ languages = ['Spanish', 'English', 'Russian', 'Chinese']
 print(list(enumerate(languages)))
 # [(0, 'Spanish'), (1, 'English'), (2, 'Russian'), (3, 'Chinese')]
 ```
+- except：捕获 try 代码块中抛出的异常，可指定异常类型，或用括号同时捕获多种类型，也可以用 `as` 把异常存进变量。
+```python
+try:
+    num = int('abc')
+except ValueError:
+    print('转换失败')
+
+try:
+    num = int('abc')
+except (ValueError, TypeError) as e:
+    print(e)  # invalid literal for int() with base 10: 'abc'
+```
 - extend(iterable)：将一个可迭代对象的元素依次追加到列表末尾。
 ```python
 numbers = [1, 2, 3]
@@ -1783,6 +2138,15 @@ def is_long_word(word):
 
 long_words = list(filter(is_long_word, words))
 print(long_words)  # ['mountain', 'river', 'cloud']
+```
+- finally：无论 try 代码块中是否发生异常都会执行，常用于关闭文件、释放资源等收尾工作。
+```python
+try:
+    num = int('abc')
+except ValueError:
+    print('转换失败')
+finally:
+    print('总会执行')
 ```
 - find(substring)：返回 substring 第一次出现的索引，如果未找到则返回 -1。
 ```python
@@ -1806,6 +2170,11 @@ for item in [1, 2, 3]:
 ```python
 message = 'The sum of {} and {} is {}'.format(5, 10, 15)
 print(message)  # The sum of 5 and 10 is 15
+```
+- from：按需从模块中导入指定内容，导入后可直接使用，无需加模块名前缀。
+```python
+from math import sqrt
+print(sqrt(36))  # 6.0
 ```
 ### G
 - get(key, default=None)：返回字典中指定键对应的值，如果键不存在则返回默认值。
@@ -1848,6 +2217,16 @@ print(programming_languages.index('Python', 3))  # 5，从索引 3 开始查找
 
 programming_languages = ('Rust', 'Java', 'Python', 'C++', 'Rust', 'Python', 'JavaScript', 'Python')
 print(programming_languages.index('Python', 2, 5))  # 2，只在 [2, 5) 范围内查找
+```
+- __init__：类的构造方法（初始化方法），创建对象时自动调用，常用来给属性赋初值。
+```python
+class Dog:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+my_dog = Dog('旺财', 3)
+print(my_dog.name)  # 旺财
 ```
 - input(prompt)：从标准输入读取一行字符串。
 ```python
@@ -1961,8 +2340,39 @@ print(min([1, 2, 3]))  # 1
 if __name__ == '__main__':
     print('这个脚本是直接运行的')
 ```
+- nonlocal：在嵌套函数中声明变量属于封闭作用域，从而允许修改外层函数里的变量。
+```python
+def outer_func():
+    res = ''
+
+    def inner_func():
+        nonlocal res
+        res = 'How are you?'
+
+    inner_func()
+    print(res)  # How are you?
+
+outer_func()
+```
+- not：布尔操作符，取反，真值变 False，假值变 True。
+```python
+print(not True)  # False
+print(not 0)     # True
+print(not '')    # True
+```
 ### O
+- or：布尔操作符，只要有一个真值就返回 True；若第一个是真值，直接返回第一个值，不再往后判断。
+```python
+print(True or False)  # True
+print(0 or 1)         # 1
+print(1 or 0)         # 1
+```
 ### P
+- pass：占位语句，执行时不发生任何事情，用来占据暂时为空的代码块。
+```python
+if condition:
+    pass  # 待实现
+```
 - pop(index=-1)：删除并返回指定索引处的元素，默认删除最后一个元素。
 ```python
 numbers = [1, 2, 3]
@@ -1986,6 +2396,22 @@ print(result_2)  # 3
 - print:打印，貌似没什么好说的
 ### Q
 ### R
+- radians(degree)：math 模块中的函数，将角度转换为弧度，常配合 sin()、cos() 使用。
+```python
+from math import radians, sin
+
+print(radians(180))       # 3.141592653589793
+print(sin(radians(90)))   # 1.0
+```
+- raise：主动抛出指定异常，常用于参数校验等场景。
+```python
+def check_positive(num):
+    if num <= 0:
+        raise ValueError('num 必须是正数')
+
+check_positive(-5)
+# ValueError: num 必须是正数
+```
 - range(stop)：生成一个从 0 到 stop-1 的整数序列。也可以传入 start 和 step。
 ```python
 for i in range(3):
@@ -2011,6 +2437,22 @@ print(numbers)  # [1, 3, 2]
 my_str = 'hello world'
 replaced_my_str = my_str.replace('hello', 'hi')
 print(replaced_my_str)  # hi world
+```
+- __repr__：魔术方法，定义 repr() 和交互式环境下显示对象的字符串，面向开发者调试。
+```python
+class Dog:
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f'Dog(name={self.name})'
+
+print(repr(Dog('旺财')))  # Dog(name=旺财)
+```
+- repr(obj)：返回对象的"官方"字符串表示，本质是调用对象的 `__repr__` 方法，主要用于调试。
+```python
+print(repr(3))        # '3'
+print(repr('hello'))  # "'hello'"
 ```
 - return：从函数中返回一个值，并结束函数的执行。
 ```python
@@ -2051,6 +2493,20 @@ set_a = {1, 2}
 set_b = {3, 4}
 print(set_a.isdisjoint(set_b))  # True
 ```
+- set(iterable)：创建集合；创建空集合必须用 set()，因为 `{}` 会被当成空字典。
+```python
+my_set = set()
+print(type(my_set))  # <class 'set'>
+
+my_set = set([1, 2, 3])
+print(my_set)  # {1, 2, 3}
+```
+- sin(angle)：math 模块中的函数，返回角度的正弦值（弧度制），常配合 radians() 使用。
+```python
+from math import radians, sin
+
+print(sin(radians(40)))  # 0.6427876096865393
+```
 - sort():将列表原地排序，返回None。
 
 ```python
@@ -2072,6 +2528,11 @@ my_str = 'hello world'
 split_words = my_str.split()
 print(split_words)  # ['hello', 'world']
 ```
+- sqrt(x)：math 模块中的函数，返回 x 的平方根。
+```python
+import math
+print(math.sqrt(36))  # 6.0
+```
 - startswith(prefix)：返回一个布尔值，指示字串是否以指定的前缀开头。
 ```python
 my_str = 'hello world'
@@ -2082,6 +2543,17 @@ print(starts_with_hello)  # True
 ```python
 num = 123
 print(str(num))  # '123'
+```
+- __str__：魔术方法，定义 print() 对象时显示的字符串，面向用户。
+```python
+class Dog:
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f'Dog(name={self.name})'
+
+print(Dog('旺财'))  # Dog(name=旺财)
 ```
 - strip()：返回一个新建字串，移除指定的前导和尾随字符。如果未传入参数，则移除前导和尾随空白字符。
 ```python
@@ -2098,12 +2570,33 @@ print(total)  # 50
 total_with_offset = sum(numbers, 10)
 print(total_with_offset)  # 60
 ```
+- super()：在子类方法中调用父类的同名方法，常用来复用父类的初始化逻辑。
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)
+        self.breed = breed
+
+print(Dog('旺财', '中华田园犬').breed)  # 中华田园犬
+```
 ### T
 - title()：返回一个新建字串，其中每个单词的首字母均大写。
 ```python
 my_str = 'hello world'
 title_case_my_str = my_str.title()
 print(title_case_my_str)  # Hello World
+```
+- try：包裹可能出错的代码块，配合 except 捕获异常；可加 else（无异常时执行）和 finally（总会执行）。
+```python
+try:
+    num = int(input('请输入一个数字：'))
+    print(10 / num)
+except ZeroDivisionError:
+    print('除数不能为零')
 ```
 - translate():根据maketrans生成的映射表转换字符，使用方法：str_to_trans.translate(table)
 ```python
@@ -2146,6 +2639,16 @@ print(pizza.values())
 # dict_values(['Margherita Pizza', 8.9])
 ```
 ### W
+- while：条件为真时重复执行代码块，直到条件变为假才结束。
+```python
+count = 0
+while count < 3:
+    print(count)
+    count += 1
+# 0
+# 1
+# 2
+```
 ### X
 ### Y
 ### Z
