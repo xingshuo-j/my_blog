@@ -1245,6 +1245,410 @@ print(calculate_expression(3))  # 14
 ```
 总结：单个内联表达式适合用 lambda，其余情况优先用常规函数。
 
+### 字典和集合：
+#### 字典及其工作原理：
+
+在 Python 中，字典是一种内置的数据结构，用于保存键-值对。它的工作方式类似于真实的字典：你通过键查找对应的值。
+
+一个典型的字典写法是把键值对放在花括号中：
+```python
+pizza = {
+    'name': 'Margherita Pizza',
+    'price': 8.9,
+    'calories_per_slice': 250,
+    'toppings': ['mozzarella', 'basil']
+}
+```
+这里 `pizza` 是字典变量，拥有四个键值对。
+
+字典适合用于你想用唯一键快速定位值、保存结构化数据或表示“名称 -> 属性”的关系时。字典中的键必须是不可变类型且唯一，值可以是任意类型，也可以重复。
+
+如果你不想写花括号，还可以使用 `dict()` 构造函数创建字典：
+```python
+pizza = dict([
+    ('name', 'Margherita Pizza'),
+    ('price', 8.9),
+    ('calories_per_slice', 250),
+    ('toppings', ['mozzarella', 'basil'])
+])
+```
+这会得到与前面直接定义的字典等价的对象。
+
+访问字典值的语法是方括号表示法：
+```python
+pizza['name']
+```
+它会返回：
+```
+'Margherita Pizza'
+```
+
+要更新字典中的值，直接给键赋新值即可。如果键不存在，就会创建一个新的键值对：
+```python
+pizza['name'] = 'Margherita'
+print(pizza['name'])  # 'Margherita'
+```
+从 Python 3.7 开始，字典会保留插入顺序，这使得迭代字典时顺序更加可预测。
+
+字典还提供了多种便捷方法来访问键、值或修改内容。
+
+`dict.get(key, default)` 会返回键对应的值，如果键不存在则返回默认值：
+```python
+pizza.get('toppings', [])  # ['mozzarella', 'basil']
+```
+
+`dict.keys()` 返回字典键的视图对象：
+```python
+pizza.keys()
+# dict_keys(['name', 'price', 'calories_per_slice', 'toppings'])
+```
+
+`dict.values()` 返回字典值的视图对象：
+```python
+pizza.values()
+# dict_values(['Margherita Pizza', 8.9, 250, ['mozzarella', 'basil']])
+```
+
+`dict.items()` 返回键值对的视图对象：
+```python
+pizza.items()
+# dict_items([('name', 'Margherita Pizza'), ('price', 8.9), ('calories_per_slice', 250), ('toppings', ['mozzarella', 'basil'])])
+```
+
+这些视图对象不会复制数据，而只是对字典当前状态的查看。
+
+`dict.clear()` 会清空字典中的所有键值对：
+```python
+pizza.clear()
+```
+
+`dict.pop(key, default)` 会删除指定键并返回它的值。如果键不存在且没有提供默认值，则会抛出 `KeyError`：
+```python
+pizza.pop('price', 10)
+```
+如果键不存在：
+```pythonCurrent User Settings:
+pizza.pop('total_price')  # KeyError
+```
+
+`dict.popitem()` 在 Python 3.7 及更高版本中，会删除并返回最后插入的键值对：
+```python
+pizza.popitem()
+```
+
+`dict.update(other)` 使用另一个字典的键值对更新当前字典。相同的键会被覆盖，新增键会直接添加：
+```python
+pizza.update({'price': 15, 'total_time': 25})
+```
+现在 `pizza` 字典会变成：
+```python
+{
+    'name': 'Margherita Pizza',
+    'price': 15,
+    'calories_per_slice': 250,
+    'toppings': ['mozzarella', 'basil'],
+    'total_time': 25
+}
+```
+#### 循环遍历字典的操作：
+
+如果你需要访问并处理字典的键值对，`for` 循环是最常用的方式。以下示例展示了对 `products` 字典的几种常见遍历方法：
+
+```python
+products = {
+    'Laptop': 990,
+    'Smartphone': 600,
+    'Tablet': 250,
+    'Headphones': 70,
+}
+```
+
+`products.values()` 只迭代字典中的值：
+```python
+for price in products.values():
+    print(price)
+```
+输出为：
+```
+990
+600
+250
+70
+```
+
+`products.keys()` 只迭代字典中的键：
+```python
+for product in products.keys():
+    print(product)
+```
+同样，你也可以直接迭代字典本身，效果等价于迭代键：
+```python
+for product in products:
+    print(product)
+```
+输出都为：
+```
+Laptop
+Smartphone
+Tablet
+Headphones
+```
+
+`products.items()` 迭代键值对元组：
+```python
+for item in products.items():
+    print(item)
+```
+输出为：
+```
+('Laptop', 990)
+('Smartphone', 600)
+('Tablet', 250)
+('Headphones', 70)
+```
+
+如果你想把键和值保存到不同的循环变量中，可以像下面这样解包：
+```python
+for product, price in products.items():
+    print(product, price)
+```
+输出为：
+```
+Laptop 990
+Smartphone 600
+Tablet 250
+Headphones 70
+```
+
+当你需要更新字典时，可以在循环体内使用键重新赋值：
+```python
+for product, price in products.items():
+    products[product] = round(price * 0.8)
+
+print(products)
+```
+输出为：
+```
+{
+    'Laptop': 792,
+    'Smartphone': 480,
+    'Tablet': 200,
+    'Headphones': 56
+}
+```
+
+如果你想在迭代时跟踪计数器，可以使用 `enumerate()`：
+```python
+for index, product in enumerate(products):
+    print(index, product)
+```
+输出为：
+```
+0 Laptop
+1 Smartphone
+2 Tablet
+3 Headphones
+```
+
+你也可以对字典的值使用 `enumerate()`：
+```python
+for index, price in enumerate(products.values()):
+    print(index, price)
+```
+输出为：
+```
+0 990
+1 600
+2 250
+3 70
+```
+
+`enumerate(products.items())` 会同时给出计数器和键值对元组：
+```python
+for index, item in enumerate(products.items()):
+    print(index, item)
+```
+输出为：
+```
+0 ('Laptop', 990)
+1 ('Smartphone', 600)
+2 ('Tablet', 250)
+3 ('Headphones', 70)
+```
+
+如果你希望从其它数字开始计数，可以传入第二个参数：
+```python
+for index, item in enumerate(products.items(), 1):
+    print(index, item)
+```
+输出为：
+```
+1 ('Laptop', 990)
+2 ('Smartphone', 600)
+3 ('Tablet', 250)
+4 ('Headphones', 70)
+```
+
+这种方式适用于所有前面介绍过的变体：只要把初始数值作为 `enumerate()` 的第二个参数传入即可。
+
+#### 集合及其工作方式：
+
+集合是 Python 的内置数据结构之一。它的核心特点是：集合中不会保存重复元素。如果你把重复值放进去，最终只会保留一个。
+
+集合是可变的、无序的，因此它不能通过索引或键来访问元素。它通常只用于存储不可变类型的数据，例如数字、字符串和元组。
+
+集合还支持数学上的集合运算，例如并集、交集、差集和对称差集。
+
+要创建一个集合，可以把元素写在花括号中，并用逗号隔开：
+```python
+my_set = {1, 2, 3, 4, 5}
+```
+
+需要注意的是，如果你想创建一个空集合，必须使用 `set()`。如果你写成 `{}`，Python 会把它当成一个空字典：
+```python
+set()  # 空集合
+{}     # 空字典
+```
+
+可以使用 `.add()` 方法向集合中添加元素：
+```python
+my_set.add(6)
+print(my_set)  # {1, 2, 3, 4, 5, 6}
+```
+
+如果你添加的是一个已经存在的元素，集合不会发生变化：
+```python
+my_set.add(5)
+print(my_set)  # {1, 2, 3, 4, 5, 6}
+```
+
+要从集合中删除元素，可以使用 `.remove()` 或 `.discard()`。二者的区别是：如果元素不存在，`.remove()` 会抛出 `KeyError`，而 `.discard()` 不会：
+```python
+my_set.remove(4)
+my_set.discard(4)
+```
+
+`.clear()` 会移除集合中的所有元素：
+```python
+my_set.clear()
+```
+
+集合还支持常见的数学运算。
+
+`.issubset()` 用来判断一个集合是不是另一个集合的子集；`.issuperset()` 则判断一个集合是不是另一个集合的超集：
+```python
+my_set = {1, 2, 3, 4, 5}
+your_set = {2, 3, 4, 6}
+
+print(your_set.issubset(my_set))   # False
+print(my_set.issuperset(your_set)) # False
+```
+
+`.isdisjoint()` 用来判断两个集合是否没有相交元素：
+```python
+print(my_set.isdisjoint(your_set))  # False
+```
+
+并集运算符 `|` 会返回一个包含两个集合所有元素的新集合：
+```python
+print(my_set | your_set)  # {1, 2, 3, 4, 5, 6}
+```
+
+交集运算符 `&` 会返回只包含两个集合共有元素的新集合：
+```python
+print(my_set & your_set)  # {2, 3, 4}
+```
+
+差集运算符 `-` 会返回第一个集合中不在第二个集合中的元素：
+```python
+print(my_set - your_set)  # {1, 5}
+```
+
+对称差运算符 `^` 会返回只出现在其中一个集合中的元素：
+```python
+print(my_set ^ your_set)  # {1, 5, 6}
+```
+
+这些运算符也有对应的复合赋值形式，例如 `|=`, `&=`, `-=`, `^=`：
+```python
+my_set -= your_set
+print(my_set)  # {1, 5}
+```
+
+最后，`in` 运算符可以判断一个元素是否在集合中：
+```python
+print(5 in my_set)  # True
+```
+### python模块：
+在软件开发中，库就像开发者的工具箱。它们提供了已经编写好、可重复使用的代码，例如函数、类和数据结构，帮助我们在项目中快速完成常见任务，而不必每次都从零开始。
+
+Python 拥有大量的标准库和内置模块，这些模块覆盖了很多常见场景，比如：
+- 与操作系统交互。
+- 处理文件。
+- 处理网络请求。
+- 处理日期和时间。
+- 执行数学运算。
+- 使用正则表达式。
+- 测试和调试代码。
+- 还有更多。
+
+常见的内置模块包括 `math`、`random`、`re` 和 `datetime`。`math` 模块提供了更复杂的数学函数，`random` 适合生成随机数，`re` 用于处理正则表达式，而 `datetime` 则用于处理日期和时间。
+
+要使用这些模块中的内容，通常需要先用 `import` 语句导入它们：
+```python
+import math
+
+print(math.sqrt(36))  # 6.0
+```
+`import` 语句可以让你访问模块中的函数、类、常量和变量。访问时通常使用“模块名 + 点 + 成员名”的形式：
+```python
+import math
+print(math.pi)  # 3.141592653589793
+```
+
+如果模块名比较长，也可以为它起一个别名：
+```python
+import math as m
+print(m.sqrt(49))  # 7.0
+```
+这在代码中会更简洁。
+
+如果只需要模块中的一部分内容，也可以按需导入：
+```python
+from math import radians, sin, cos
+
+angle_degrees = 40
+angle_radians = radians(angle_degrees)
+
+print(sin(angle_radians))  # 0.6427876096865393
+print(cos(angle_radians))  # 0.766044443118978
+```
+这种写法可以直接使用导入的函数，而不需要加模块名前缀。
+
+如果你想导入模块中的所有内容，也可以使用星号：
+```python
+from math import *
+print(sqrt(36))  # 6.0
+```
+不过这种方式容易引起命名冲突，通常不建议在大型项目中使用。
+
+对于类和对象，模块中的内容同样可以通过点运算符访问。比如 `datetime` 模块中的 `date` 类：
+```python
+import datetime
+
+birthday = datetime.date(1959, 7, 15)
+print(birthday.day)    # 15
+print(birthday.month)  # 7
+print(birthday.year)   # 1959
+```
+
+此外，还有一个非常常见的写法：
+```python
+if __name__ == '__main__':
+    print('这个脚本是直接运行的')
+```
+这里的 `__name__` 是 Python 的一个特殊内置变量。当脚本被直接执行时，它的值是 `"__main__"`；如果这个脚本被当作模块导入到别的文件中，`__name__` 就会是模块名。利用这个特性，我们可以让脚本既能单独运行，也能被其他代码导入而不执行主逻辑。
+
 ### 其他：
 > 方法和函数的区别：1.应用方式不同，函数直接调用或带入参数，方法在操作对象后调用;2.方法更像是对象的行为，函数则偏向于独立的工具
 > python文件以.py结尾，可在终端以python file.py的方式启动
@@ -1258,14 +1662,38 @@ num = -15
 absolute_value = abs(num)
 print(absolute_value) # 15
 ```
+- as：为模块或名称起别名，用于缩短名称或避免命名冲突。
+```python
+import math as m
+print(m.sqrt(16))  # 4.0
+```
+- add(item)：向集合中添加一个元素，若元素已存在则不会重复添加。
+```python
+my_set = {1, 2, 3}
+my_set.add(4)
+print(my_set)  # {1, 2, 3, 4}
+```
 - append(item)：将元素追加到列表末尾。
 ```python
 items = [1, 2]
 items.append(3)
 print(items)  # [1, 2, 3]
 ```
+- all(iterable)：判断可迭代对象中的所有元素是否都为真。若为空可迭代对象，返回 `True`。
+```python
+print(all([1, 2, 3]))        # True
+print(all([1, 0, 3]))        # False
+print(all([]))               # True
+print(all([True, True, True]))  # True
+```
 ### B
-- bool:查询元素布尔值，返回True或Flase。
+- bool():查询元素布尔值，返回 `True` 或 `False`。
+```python
+print(bool(1))      # True
+print(bool(0))      # False
+print(bool('hello'))  # True
+print(bool(''))     # False
+```
 ### C
 - capitalize()：返回一个新字串，首个字符大写，其余字符小写。
 ```python
@@ -1278,6 +1706,12 @@ print(capitalized_my_str)  # Hello world
 numbers = [1, 2, 3]
 numbers.clear()
 print(numbers)  # []
+```
+- clear()：移除集合中的所有元素。
+```python
+my_set = {1, 2, 3}
+my_set.clear()
+print(my_set)  # set()
 ```
 - count(value)：返回该值在序列中出现的次数。对于字符串，统计子字符串出现次数；对于列表和元组，则统计元素出现次数。
 ```python
@@ -1302,6 +1736,20 @@ def square(num):
 fruits = ['apple', 'banana', 'cherry']
 del fruits[1]
 print(fruits)  # ['apple', 'cherry']
+```
+- dict(iterable=None, **kwargs)：创建一个字典对象，可接受键值对序列或关键字参数。
+```python
+pizza = dict([
+    ('name', 'Margherita Pizza'),
+    ('price', 8.9)
+])
+print(pizza)  # {'name': 'Margherita Pizza', 'price': 8.9}
+```
+- discard(value)：从集合中移除指定元素；如果元素不存在则不报错。
+```python
+my_set = {1, 2, 3}
+my_set.discard(2)
+print(my_set)  # {1, 3}
 ```
 ### E
 - elif:条件判断
@@ -1349,12 +1797,22 @@ my_float_1 = float(my_int_1)
 print(my_float_1)  # 56.0
 print(type(my_float_1))  # <class 'float'>
 ```
+- for：用于遍历可迭代对象，每次迭代都会执行循环体中的语句块。
+```python
+for item in [1, 2, 3]:
+    print(item)
+```
 - format():字符串方法，用于格式化字符串。
 ```python
 message = 'The sum of {} and {} is {}'.format(5, 10, 15)
 print(message)  # The sum of 5 and 10 is 15
 ```
 ### G
+- get(key, default=None)：返回字典中指定键对应的值，如果键不存在则返回默认值。
+```python
+pizza = {'name': 'Margherita Pizza', 'price': 8.9}
+print(pizza.get('toppings', []))  # []
+```
 - global():在封闭寻找全局同名变量直接修改
 ```python
 def change():
@@ -1367,7 +1825,16 @@ print(a)    #3
 ### H
 ### I
 - if:条件判断
-- index(value)：返回序列中第一个匹配元素的索引；如果元素不存在，会抛出 `ValueError`。
+- import：导入模块，让你可以访问模块中的函数、类、常量和变量。
+```python
+import math
+print(math.pi)
+```
+- in:成员资格运算符，`x in y` 用于检查元素是否存在于集合、序列或字典键中。
+```python
+print('Laptop' in {'Laptop': 990, 'Tablet': 250})  # True
+```
+- index(value, start=0, end=None)：返回序列中第一个匹配元素的索引；如果元素不存在，会抛出 `ValueError`。`start` 和 `end` 可选，用来限定查找范围，范围是 `[start, end)`。
 ```python
 numbers = [1, 2, 3, 2]
 index_of_two = numbers.index(2)
@@ -1375,6 +1842,12 @@ print(index_of_two)  # 1
 
 tuple_values = ('a', 'b', 'a')
 print(tuple_values.index('b'))  # 1
+
+programming_languages = ('Rust', 'Java', 'Python', 'C++', 'Rust', 'Python')
+print(programming_languages.index('Python', 3))  # 5，从索引 3 开始查找
+
+programming_languages = ('Rust', 'Java', 'Python', 'C++', 'Rust', 'Python', 'JavaScript', 'Python')
+print(programming_languages.index('Python', 2, 5))  # 2，只在 [2, 5) 范围内查找
 ```
 - input(prompt)：从标准输入读取一行字符串。
 ```python
@@ -1412,6 +1885,12 @@ my_str = 'hello world'
 is_all_upper = my_str.isupper()
 print(is_all_upper)  # False
 ```
+- items():当它是字典方法时，返回键值对的视图对象。
+```python
+pizza = {'name': 'Margherita Pizza', 'price': 8.9}
+print(pizza.items())
+# dict_items([('name', 'Margherita Pizza'), ('price', 8.9)])
+```
 ### J
 - join(iterable)：将可迭代对象的元素用分隔符连接成一个字串。
 ```python
@@ -1420,6 +1899,12 @@ joined_my_str = ' '.join(my_list)
 print(joined_my_str)  # hello world
 ```
 ### K
+- keys():当它是字典方法时，返回字典键的视图对象。
+```python
+pizza = {'name': 'Margherita Pizza', 'price': 8.9}
+print(pizza.keys())
+# dict_keys(['name', 'price'])
+```
 ### L
 - lambda：创建匿名内联函数，常用于作为高阶函数的参数。
 ```python
@@ -1471,6 +1956,11 @@ print(max([1, 2, 3]))  # 3
 print(min([1, 2, 3]))  # 1
 ```
 ### N
+- __name__：特殊内置变量；当脚本直接运行时，它的值是 `"__main__"`，如果被导入则是模块名。
+```python
+if __name__ == '__main__':
+    print('这个脚本是直接运行的')
+```
 ### O
 ### P
 - pop(index=-1)：删除并返回指定索引处的元素，默认删除最后一个元素。
@@ -1479,6 +1969,12 @@ numbers = [1, 2, 3]
 item = numbers.pop(1)
 print(item)    # 2
 print(numbers) # [1, 3]
+```
+- popitem():删除并返回字典中最后插入的键值对。
+```python
+pizza = {'name': 'Margherita Pizza', 'price': 8.9}
+print(pizza.popitem())
+# ('price', 8.9)
 ```
 - pow()：将一个数字提升到另一个数字的幂，或执行模幂运算。
 ```python
@@ -1497,6 +1993,12 @@ for i in range(3):
 # 0
 # 1
 # 2
+```
+- remove(value)：从集合中移除指定元素；如果元素不存在会抛出 `KeyError`。
+```python
+my_set = {1, 2, 3}
+my_set.remove(2)
+print(my_set)  # {1, 3}
 ```
 - remove(value)：从列表中删除第一个匹配的元素。
 ```python
@@ -1531,6 +2033,24 @@ print(rounded_int_1) # 5
 print(rounded_int_2) # 4.3
 ```
 ### S
+- issubset(other):判断当前集合是否是另一个集合的子集。
+```python
+my_set = {1, 2, 3}
+your_set = {1, 2}
+print(your_set.issubset(my_set))  # True
+```
+- issuperset(other):判断当前集合是否是另一个集合的超集。
+```python
+my_set = {1, 2, 3}
+your_set = {1, 2}
+print(my_set.issuperset(your_set))  # True
+```
+- isdisjoint(other):判断两个集合是否没有共同元素。
+```python
+set_a = {1, 2}
+set_b = {3, 4}
+print(set_a.isdisjoint(set_b))  # True
+```
 - sort():将列表原地排序，返回None。
 
 ```python
@@ -1605,6 +2125,13 @@ a=3
 type(3) #<class 'int'>
 ```
 ### U
+- update(mapping)：将另一个字典的键值对合并到当前字典中，重复键会被覆盖。
+```python
+pizza = {'name': 'Margherita Pizza', 'price': 8.9}
+pizza.update({'price': 15, 'total_time': 25})
+print(pizza)
+# {'name': 'Margherita Pizza', 'price': 15, 'total_time': 25}
+```
 - upper()：返回一个所有字符都转换为大写的新建字串。
 ```python
 my_str = 'hello world'
@@ -1612,6 +2139,12 @@ uppercase_my_str = my_str.upper()
 print(uppercase_my_str)  # HELLO WORLD
 ```
 ### V
+- values():当它是字典方法时，返回字典值的视图对象。
+```python
+pizza = {'name': 'Margherita Pizza', 'price': 8.9}
+print(pizza.values())
+# dict_values(['Margherita Pizza', 8.9])
+```
 ### W
 ### X
 ### Y
